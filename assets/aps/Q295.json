@@ -1,0 +1,111 @@
+{
+  "$schema": "https://datagems-dev.scayle.es/moma2/v1/schemas/ap/ap-common.schema.json",
+  "edges": [
+    {
+      "from": "23755fb5-5f51-59e9-8f41-e6efcbfaaa3d",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "40e1dbba-2ea8-5052-9a94-9707b640f202"
+    },
+    {
+      "from": "23755fb5-5f51-59e9-8f41-e6efcbfaaa3d",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "7721b3c9-c6a7-5a2e-85b0-b2248dbe8232"
+    },
+    {
+      "from": "7721b3c9-c6a7-5a2e-85b0-b2248dbe8232",
+      "labels": [
+        "follows"
+      ],
+      "to": "40e1dbba-2ea8-5052-9a94-9707b640f202"
+    },
+    {
+      "from": "927b8510-b1be-5ce2-84e9-7a183c2b9690",
+      "labels": [
+        "input"
+      ],
+      "to": "40e1dbba-2ea8-5052-9a94-9707b640f202"
+    },
+    {
+      "from": "927b8510-b1be-5ce2-84e9-7a183c2b9690",
+      "labels": [
+        "input"
+      ],
+      "to": "7721b3c9-c6a7-5a2e-85b0-b2248dbe8232"
+    },
+    {
+      "from": "927b8510-b1be-5ce2-84e9-7a183c2b9690",
+      "labels": [
+        "containedIn"
+      ],
+      "to": "e6274dbb-1421-5788-9b5c-8a344ace8b0c"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "23755fb5-5f51-59e9-8f41-e6efcbfaaa3d",
+      "labels": [
+        "Analytical_Pattern"
+      ],
+      "properties": {
+        "name": "Meteo Q295 AP",
+        "description": "When was the last month with measurable precipitation (> 1 mm) in City of Zurich in 2019?",
+        "process": "query",
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00"
+      }
+    },
+    {
+      "id": "40e1dbba-2ea8-5052-9a94-9707b640f202",
+      "labels": [
+        "Operator",
+        "Provenance_Annotate_Dataset_Operator"
+      ],
+      "properties": {
+        "name": "Annotate Meteo Dataset Operator",
+        "description": "Annotate the meteo tables with provenance information",
+        "dataset": "meteo"
+      }
+    },
+    {
+      "id": "7721b3c9-c6a7-5a2e-85b0-b2248dbe8232",
+      "labels": [
+        "Operator",
+        "Provenance_SQL_Operator"
+      ],
+      "properties": {
+        "name": "Q295 SQL Query Operator",
+        "description": "When was the last month with measurable precipitation (> 1 mm) in City of Zurich in 2019?",
+        "command": "query",
+        "queryType": "SELECT",
+        "type": "SQL Query",
+        "step": 1,
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00",
+        "query": "WITH time_window_1 AS (\n  SELECT\n    EXTRACT(MONTH FROM mtp.time) AS time_window_2,\n    EXTRACT(YEAR FROM mtp.time) AS time_window_3,\n    SUM(mtp.tp) AS total_precipitation\n  FROM meteo_tp AS mtp\n  WHERE\n    (\n      ROUND(CAST(mtp.latitude AS DECIMAL), 1),\n      ROUND(CAST(mtp.longitude AS DECIMAL), 1)\n    ) IN ((47.4, 8.5))\n    AND EXTRACT(YEAR FROM mtp.time) = 2019\n  GROUP BY\n    EXTRACT(MONTH FROM mtp.time),\n    EXTRACT(YEAR FROM mtp.time)\n)\nSELECT\n  time_window_1.time_window_2 AS time_window_2,\n  time_window_1.time_window_3 AS time_window_3,\n  time_window_1.total_precipitation AS precipitation_m\nFROM time_window_1\nWHERE\n  time_window_1.total_precipitation > 0.001\nORDER BY\n  time_window_1.time_window_2 DESC\nLIMIT 1"
+      }
+    },
+    {
+      "id": "927b8510-b1be-5ce2-84e9-7a183c2b9690",
+      "labels": [
+        "RelationalDatabase"
+      ],
+      "properties": {
+        "name": "meteo",
+        "description": "Meteorological database (ERA5-Land schema)"
+      }
+    },
+    {
+      "id": "e6274dbb-1421-5788-9b5c-8a344ace8b0c",
+      "labels": [
+        "Table"
+      ],
+      "properties": {
+        "name": "meteo.meteo_tp"
+      }
+    }
+  ]
+}

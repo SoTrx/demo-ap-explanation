@@ -1,0 +1,165 @@
+{
+  "ap": "T157.json",
+  "plain": {
+    "columns": [
+      "latitude",
+      "longitude",
+      "highest_point_elevation_m",
+      "highest_precipitation_record_m"
+    ],
+    "rows": [
+      [
+        47.3515,
+        8.4902,
+        860.91,
+        0.0
+      ]
+    ],
+    "seconds": 0.1
+  },
+  "request": "POST /api/v1/aps/explanation?probability=false",
+  "seconds": 27.7,
+  "task_id": "3692cb01-252b-44f7-9ccf-681ad930154d",
+  "status": "success",
+  "result": {
+    "derivations": [
+      {
+        "answer": {
+          "latitude": 47.3515,
+          "longitude": 8.4902,
+          "highest_point_elevation_m": 860.91,
+          "highest_precipitation_record_m": "0 (*)"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "max((meteo_tp@k28218b8234df49d29451b0283fd918a3 ⊗ meteo_elevation@kaea43e35a79d480e844ecde0114eaf09)*0,(meteo_tp@ka0c14bdeea814b0494729333c1a76330 ⊗ meteo_elevation@kaea43e35a79d480e844ecde0114eaf09)*0,(meteo_tp@kf94deda960ae484780d1d3a3060611c7 ⊗ meteo_elevation@kaea43e35a79d480e844ecde0114eaf09)*0,(meteo_tp@k2cd51b93255449ed985d185f416c94a5 ⊗ meteo_elevation@kaea43e35a79d480e844ecde0114eaf09)*0,(meteo_tp@k61d9cd8428a54f3b9e5b6c229647c135 ⊗ meteo_elevation@kaea43e35a79d480e844ecde0114eaf09)*0,(meteo_tp@k7989fe1b7a294780b6410bb9f8c5de5a ⊗ meteo_elevation@kaea43e35a79d480e844ecde0114eaf09)*0,(meteo_tp@ka157db6a4baf434480e6801a1477a662 ⊗ meteo_elevation@kaea43e35a79d480e844ecde0114eaf09)*0)",
+            "data": [
+              {
+                "reference": "meteo_tp@k28218b8234df49d29451b0283fd918a3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-11-14T00:00:00",
+                  "tp": 0.0
+                }
+              },
+              {
+                "reference": "meteo_tp@ka0c14bdeea814b0494729333c1a76330",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-11-15T00:00:00",
+                  "tp": 0.0
+                }
+              },
+              {
+                "reference": "meteo_tp@kf94deda960ae484780d1d3a3060611c7",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-11-16T00:00:00",
+                  "tp": 0.0
+                }
+              },
+              {
+                "reference": "meteo_tp@k2cd51b93255449ed985d185f416c94a5",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-11-17T00:00:00",
+                  "tp": 0.0
+                }
+              },
+              {
+                "reference": "meteo_tp@k61d9cd8428a54f3b9e5b6c229647c135",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-11-18T00:00:00",
+                  "tp": 0.0
+                }
+              },
+              {
+                "reference": "meteo_tp@k7989fe1b7a294780b6410bb9f8c5de5a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-11-19T00:00:00",
+                  "tp": 0.0
+                }
+              },
+              {
+                "reference": "meteo_tp@ka157db6a4baf434480e6801a1477a662",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-11-20T00:00:00",
+                  "tp": 0.0
+                }
+              },
+              {
+                "reference": "meteo_elevation@kaea43e35a79d480e844ecde0114eaf09",
+                "data": {
+                  "latitude": 47.3515,
+                  "longitude": 8.4902,
+                  "elevation": 860.91
+                }
+              },
+              {
+                "reference": "meteo_elevation@kaea43e35a79d480e844ecde0114eaf09",
+                "data": {
+                  "latitude": 47.3515,
+                  "longitude": 8.4902,
+                  "elevation": 860.91
+                }
+              },
+              {
+                "reference": "meteo_elevation@kaea43e35a79d480e844ecde0114eaf09",
+                "data": {
+                  "latitude": 47.3515,
+                  "longitude": 8.4902,
+                  "elevation": 860.91
+                }
+              },
+              {
+                "reference": "meteo_elevation@kaea43e35a79d480e844ecde0114eaf09",
+                "data": {
+                  "latitude": 47.3515,
+                  "longitude": 8.4902,
+                  "elevation": 860.91
+                }
+              },
+              {
+                "reference": "meteo_elevation@kaea43e35a79d480e844ecde0114eaf09",
+                "data": {
+                  "latitude": 47.3515,
+                  "longitude": 8.4902,
+                  "elevation": 860.91
+                }
+              },
+              {
+                "reference": "meteo_elevation@kaea43e35a79d480e844ecde0114eaf09",
+                "data": {
+                  "latitude": 47.3515,
+                  "longitude": 8.4902,
+                  "elevation": 860.91
+                }
+              },
+              {
+                "reference": "meteo_elevation@kaea43e35a79d480e844ecde0114eaf09",
+                "data": {
+                  "latitude": 47.3515,
+                  "longitude": 8.4902,
+                  "elevation": 860.91
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      }
+    ],
+    "explanation": "\n\n### Query intent\n\nThe query asks for the precipitation situation at the highest-elevation detailed location associated with the coarse geographic area latitude **47.4 / longitude 8.5**.\n\nMore specifically, it:\n\n- looks among elevation records for locations whose latitude and longitude fall into the rounded coordinate area **47.4 / 8.5**;\n- selects the location with the greatest elevation;\n- finds precipitation observations whose rounded coordinates also match that same coarse coordinate area;\n- restricts those observations to **week 46 of 2011**;\n- returns the selected location’s precise coordinates and elevation, together with the **largest precipitation amount recorded for that location during that week**.\n\n---\n\n### Result explanation\n\nThe result means that the highest-elevation location associated with the rounded coordinate area **47.4 / 8.5** is located at:\n\n- **latitude:** 47.3515  \n- **longitude:** 8.4902  \n- **elevation:** 860.91  \n\nFor this location, the largest precipitation value recorded in **week 46 of 2011** was:\n\n- **0**\n\nThe returned value **`0 (*)`** should be understood as a precipitation amount of **zero**, with an annotation marker likely coming from the provenance/display formatting. It does not mean a different precipitation value; the actual maximum precipitation amount is zero.\n\n---\n\n### Provenance explanation\n\nThe provenance tells us that this result was produced by combining one selected elevation record with several precipitation records.\n\n#### 1. The selected elevation record\n\nThere is one elevation record from the elevation information, with these details:\n\n- **latitude:** 47.3515  \n- **longitude:** 8.4902  \n- **elevation:** 860.91  \n\nThis record represents the detailed high-elevation location that was selected. Although its exact coordinates are **47.3515 / 8.4902**, when its coordinates are rounded to one decimal place, they fall into the target coarse area **47.4 / 8.5**. It is the record that supplies the final answer’s coordinates and elevation.\n\n#### 2. The qualifying precipitation records\n\nThere are seven precipitation records associated with the rounded coordinate area **47.4 / 8.5**:\n\n- 2011-11-14, precipitation amount: **0.0**\n- 2011-11-15, precipitation amount: **0.0**\n- 2011-11-16, precipitation amount: **0.0**\n- 2011-11-17, precipitation amount: **0.0**\n- 2011-11-18, precipitation amount: **0.0**\n- 2011-11-19, precipitation amount: **0.0**\n- 2011-11-20, precipitation amount: **0.0**\n\nThese records represent daily precipitation observations for the same coarse geographic location during the requested period, week 46 of 2011.\n\n#### 3. How the records connect\n\nThe connection between the elevation record and each precipitation record is based on their geographic agreement after rounding:\n\n- The detailed elevation location **47.3515 / 8.4902** rounds to **47.4 / 8.5**.\n- The precipitation records are also associated with **47.4 / 8.5**.\n- Therefore, each precipitation record is treated as belonging to the same coarse geographic area as the selected elevation location.\n\nThe provenance shows that the selected elevation record was combined with each of the seven precipitation records. In domain terms, this means:\n\n- the same high-elevation location was considered together with each day’s precipitation observation;\n- each daily observation was checked to see whether it belonged to the selected location’s coarse coordinate area and requested week;\n- all seven observations qualified.\n\n#### 4. Why the maximum precipitation value is 0\n\nThe final precipitation value is the **largest precipitation amount** among the qualifying combined observations.\n\nThe seven qualifying observations all have precipitation amount **0.0**. Therefore, the largest of these values is also **0**.\n\nSo the result is justified as follows:\n\n- the location comes from the elevation record at **47.3515 / 8.4902**, elevation **860.91**;\n- the precipitation maximum comes from the seven precipitation records for week 46 of 2011;\n- because all seven records show precipitation of **0**, the highest recorded precipitation amount for that week at the selected location is **0**.\n\n#### 5. Why the same elevation record appears repeatedly\n\nThe elevation record appears seven times in the provenance because it was combined separately with each of the seven qualifying precipitation observations. This repetition does not mean there are seven different elevation locations. It means the same selected high-elevation location was linked to each of the seven daily precipitation observations.\n\nTogether, these seven matches independently support the same result: the selected location has elevation **860.91**, and its maximum precipitation amount in week 46 of 2011 was **0**."
+  },
+  "error": null
+}

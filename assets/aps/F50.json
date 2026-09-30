@@ -1,0 +1,111 @@
+{
+  "$schema": "https://datagems-dev.scayle.es/moma2/v1/schemas/ap/ap-common.schema.json",
+  "edges": [
+    {
+      "from": "6989ea4d-cdb1-50af-989f-8932212162ee",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "a1cce85b-92a6-5dc8-8c9f-bbfa80c8b844"
+    },
+    {
+      "from": "6989ea4d-cdb1-50af-989f-8932212162ee",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "b45b0d54-6538-5307-9d60-77cbaebd66bf"
+    },
+    {
+      "from": "b45b0d54-6538-5307-9d60-77cbaebd66bf",
+      "labels": [
+        "follows"
+      ],
+      "to": "a1cce85b-92a6-5dc8-8c9f-bbfa80c8b844"
+    },
+    {
+      "from": "333c3ea4-b1f6-5210-91ef-7d1dfbb4af7a",
+      "labels": [
+        "input"
+      ],
+      "to": "a1cce85b-92a6-5dc8-8c9f-bbfa80c8b844"
+    },
+    {
+      "from": "333c3ea4-b1f6-5210-91ef-7d1dfbb4af7a",
+      "labels": [
+        "input"
+      ],
+      "to": "b45b0d54-6538-5307-9d60-77cbaebd66bf"
+    },
+    {
+      "from": "333c3ea4-b1f6-5210-91ef-7d1dfbb4af7a",
+      "labels": [
+        "containedIn"
+      ],
+      "to": "e520ea44-da39-54ca-b99c-c5dec399e181"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "6989ea4d-cdb1-50af-989f-8932212162ee",
+      "labels": [
+        "Analytical_Pattern"
+      ],
+      "properties": {
+        "name": "Meteo F50 AP",
+        "description": "Show the number of highest temperature readings in Celsius above 30 degrees in the City of Zurich in 2015.",
+        "process": "query",
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00"
+      }
+    },
+    {
+      "id": "a1cce85b-92a6-5dc8-8c9f-bbfa80c8b844",
+      "labels": [
+        "Operator",
+        "Provenance_Annotate_Dataset_Operator"
+      ],
+      "properties": {
+        "name": "Annotate Meteo Dataset Operator",
+        "description": "Annotate the meteo tables with provenance information",
+        "dataset": "meteo"
+      }
+    },
+    {
+      "id": "b45b0d54-6538-5307-9d60-77cbaebd66bf",
+      "labels": [
+        "Operator",
+        "Provenance_SQL_Operator"
+      ],
+      "properties": {
+        "name": "F50 SQL Query Operator",
+        "description": "Show the number of highest temperature readings in Celsius above 30 degrees in the City of Zurich in 2015.",
+        "command": "query",
+        "queryType": "SELECT",
+        "type": "SQL Query",
+        "step": 1,
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00",
+        "query": "SELECT\n  COUNT(*)\nFROM meteo_tmax AS mtx\nWHERE\n  mtx.tmax - 273.15 > 30\n  AND EXTRACT(YEAR FROM mtx.time) = 2015\n  AND (\n    ROUND(CAST(mtx.latitude AS DECIMAL), 1),\n    ROUND(CAST(mtx.longitude AS DECIMAL), 1)\n  ) IN ((47.4, 8.5))"
+      }
+    },
+    {
+      "id": "333c3ea4-b1f6-5210-91ef-7d1dfbb4af7a",
+      "labels": [
+        "RelationalDatabase"
+      ],
+      "properties": {
+        "name": "meteo",
+        "description": "Meteorological database (ERA5-Land schema)"
+      }
+    },
+    {
+      "id": "e520ea44-da39-54ca-b99c-c5dec399e181",
+      "labels": [
+        "Table"
+      ],
+      "properties": {
+        "name": "meteo.meteo_tmax"
+      }
+    }
+  ]
+}

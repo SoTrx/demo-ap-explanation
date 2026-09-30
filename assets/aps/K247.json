@@ -1,0 +1,111 @@
+{
+  "$schema": "https://datagems-dev.scayle.es/moma2/v1/schemas/ap/ap-common.schema.json",
+  "edges": [
+    {
+      "from": "1ac165ef-da99-5d1f-b9b8-47ceb0a1a7bc",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "1ad978c7-e85a-5d08-a06c-277399ef5dbf"
+    },
+    {
+      "from": "1ac165ef-da99-5d1f-b9b8-47ceb0a1a7bc",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "de6c53ee-9f03-5e15-9798-919610f44d09"
+    },
+    {
+      "from": "de6c53ee-9f03-5e15-9798-919610f44d09",
+      "labels": [
+        "follows"
+      ],
+      "to": "1ad978c7-e85a-5d08-a06c-277399ef5dbf"
+    },
+    {
+      "from": "d5a26211-89f6-5735-bf6c-9ab27143435f",
+      "labels": [
+        "input"
+      ],
+      "to": "1ad978c7-e85a-5d08-a06c-277399ef5dbf"
+    },
+    {
+      "from": "d5a26211-89f6-5735-bf6c-9ab27143435f",
+      "labels": [
+        "input"
+      ],
+      "to": "de6c53ee-9f03-5e15-9798-919610f44d09"
+    },
+    {
+      "from": "d5a26211-89f6-5735-bf6c-9ab27143435f",
+      "labels": [
+        "containedIn"
+      ],
+      "to": "183b22cf-ba10-5419-a13d-015178f8b750"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "1ac165ef-da99-5d1f-b9b8-47ceb0a1a7bc",
+      "labels": [
+        "Analytical_Pattern"
+      ],
+      "properties": {
+        "name": "Meteo K247 AP",
+        "description": "What are the counts of Frost Days (FD) in City of Zurich for each January between 2005 and 2015?",
+        "process": "query",
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00"
+      }
+    },
+    {
+      "id": "1ad978c7-e85a-5d08-a06c-277399ef5dbf",
+      "labels": [
+        "Operator",
+        "Provenance_Annotate_Dataset_Operator"
+      ],
+      "properties": {
+        "name": "Annotate Meteo Dataset Operator",
+        "description": "Annotate the meteo tables with provenance information",
+        "dataset": "meteo"
+      }
+    },
+    {
+      "id": "de6c53ee-9f03-5e15-9798-919610f44d09",
+      "labels": [
+        "Operator",
+        "Provenance_SQL_Operator"
+      ],
+      "properties": {
+        "name": "K247 SQL Query Operator",
+        "description": "What are the counts of Frost Days (FD) in City of Zurich for each January between 2005 and 2015?",
+        "command": "query",
+        "queryType": "SELECT",
+        "type": "SQL Query",
+        "step": 1,
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00",
+        "query": "SELECT\n  COUNT(*) AS time_window_2,\n  mtn.latitude AS latitude,\n  mtn.longitude AS longitude,\n  EXTRACT(YEAR FROM mtn.time) AS time_window_3\nFROM meteo_tmin AS mtn\nWHERE\n  EXTRACT(YEAR FROM mtn.time) BETWEEN 2005 AND 2015\n  AND EXTRACT(MONTH FROM mtn.time) = 1\n  AND (\n    ROUND(CAST(mtn.latitude AS DECIMAL), 1),\n    ROUND(CAST(mtn.longitude AS DECIMAL), 1)\n  ) IN ((47.4, 8.5))\n  AND mtn.tmin - 273.15 < 0\nGROUP BY\n  mtn.latitude,\n  mtn.longitude,\n  EXTRACT(YEAR FROM mtn.time)"
+      }
+    },
+    {
+      "id": "d5a26211-89f6-5735-bf6c-9ab27143435f",
+      "labels": [
+        "RelationalDatabase"
+      ],
+      "properties": {
+        "name": "meteo",
+        "description": "Meteorological database (ERA5-Land schema)"
+      }
+    },
+    {
+      "id": "183b22cf-ba10-5419-a13d-015178f8b750",
+      "labels": [
+        "Table"
+      ],
+      "properties": {
+        "name": "meteo.meteo_tmin"
+      }
+    }
+  ]
+}

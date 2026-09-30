@@ -1,0 +1,13 @@
+readings,values,status,formula_chars,seconds,peak_backend_mb
+4,wet,ok,371,0.3,0
+8,wet,ok,10683,0.3,0
+12,wet,ok,249699,0.3,0
+16,wet,ok,5308211,0.3,0
+18,wet,ok,23854784,0.6,236
+20,wet,ok,105905822,2.5,934
+22,wet,killed,,9.0,2529
+24,wet,killed,,11.4,3018
+16,dry,ok,4644821,0.3,0
+18,dry,ok,20873169,0.6,87
+20,dry,ok,99286989,2.5,878
+31,dry,killed,,5.0,2984

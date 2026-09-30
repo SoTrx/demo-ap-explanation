@@ -1,0 +1,113 @@
+services:
+
+  app:
+    image: ghcr.io/sotrx/sotrx/demo-ap-explanation:v0.1.0
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.demo-explanation.rule=PathPrefix(`/demo-explanation`)
+    - traefik.http.services.demo-explanation.loadbalancer.server.port=8501
+    - traefik.http.routers.demo-explanation.entrypoints=web
+    # ports:
+    #   - "8501:8501"
+    environment:
+      - AP_EXPLANATION_SERVICE_URL=http://ap-explanation:5000
+      # The plain (provenance-free) SQL answer shown next to the provenance is read
+      # straight from the database, as ap-explanation does not return it.
+      - PLAIN_DSN=host=meteo-postgres user=provdemo password=provdemo dbname=meteo
+      - STREAMLIT_SERVER_BASE_URL_PATH=${APP_BASE_URL_PATH:-}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:8501${APP_BASE_URL_PATH:-/}')\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      ap-explanation:
+        condition: service_healthy
+    networks:
+      - traefik
+      - internal
+
+  meteo-postgres:
+    image: ghcr.io/datagems-eosc/postgres-provsql:17-v1.12.0
+    labels:
+      - traefik.enable=false
+    volumes:
+      # ERA5 readings for the City of Zurich cell, loaded on the first start only.
+      - ./dependencies/postgres-seed:/docker-entrypoint-initdb.d:ro
+    environment:
+      - POSTGRES_USER=provdemo
+      - POSTGRES_PASSWORD=provdemo
+      - POSTGRES_DB=meteo
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U provdemo -d meteo" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - internal
+
+  ap-explanation:
+    # The meteo questions need the sql_rewriter changes released after v1.1.1
+    # (aggregate provenance, col_<i> naming). Override AP_EXPLANATION_IMAGE / AP_EXPLANATION_TAG to run
+    # another build, e.g. a local `docker build --target prod -t ...` of ap-explanation.
+    image: ${AP_EXPLANATION_IMAGE:-ghcr.io/datagems-eosc/datagems-eosc/ap-explanation}:${AP_EXPLANATION_TAG:-v1.2.0}
+    labels:
+      - traefik.enable=false
+    environment:
+      # The database is the AP's RelationalDatabase node name (meteo) on this server.
+      - POSTGRES_HOST=meteo-postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=provdemo
+      - POSTGRES_PASSWORD=provdemo
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_BROKER_URI=redis://redis:6379/0
+      - USE_EMBEDDED_CELERY_WORKER=true
+      # No OIDC issuer: authentication is off.
+      - OIDC_ISSUER=
+      # Without LLM_API_BASE the service still computes provenance, but writes no explanation.
+      - LLM_API_BASE=${LLM_API_BASE:-}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_API_MODEL=${LLM_API_MODEL:-}
+      - LLM_SSL_VERIFY=${LLM_SSL_VERIFY:-false}
+      - LLM_TIMEOUT=${LLM_TIMEOUT:-300}
+      - OTEL_TRACES_EXPORTER=none
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:5000/api/v1/health')\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    depends_on:
+      meteo-postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+
+  redis:
+    image: redis:7-alpine
+    labels:
+      - traefik.enable=false
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+networks:
+  traefik:
+    external: true
+  internal:
+    driver: bridge

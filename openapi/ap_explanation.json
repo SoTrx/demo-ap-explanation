@@ -1,0 +1,595 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AP Explanation API",
+    "description": "API for explaining Analytical Patterns with provenance tracking using ProvSQL",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Index",
+        "operationId": "index__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/aps/explanation": {
+      "post": {
+        "tags": [
+          "analytical patterns"
+        ],
+        "summary": "Managed Provenance Ap",
+        "description": "Dispatch an async task for the full explanation lifecycle with all semirings.\n\nReturns HTTP 202 Accepted. Poll the result at GET /api/v1/aps/explanation/{task_id}.",
+        "operationId": "managed_provenance_ap_api_v1_aps_explanation_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "probability",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Also compute the probability of each result row. Tuple probabilities are read from the column named by each Table/CSV node's `probabilityColumn` property; tables without one are treated as certain.",
+              "default": false,
+              "title": "Probability"
+            },
+            "description": "Also compute the probability of each result row. Tuple probabilities are read from the column named by each Table/CSV node's `probabilityColumn` property; tables without one are treated as certain."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvenanceAnalyticalPattern"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedProvenanceTaskResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/aps/explanation/{semiring_name}": {
+      "post": {
+        "tags": [
+          "analytical patterns"
+        ],
+        "summary": "Managed Provenance Ap With Semiring",
+        "description": "Dispatch an async task for the full explanation lifecycle with a specific semiring.\n\nReturns HTTP 202 Accepted. Poll the result at GET /api/v1/aps/explanation/{task_id}.",
+        "operationId": "managed_provenance_ap_with_semiring_api_v1_aps_explanation__semiring_name__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "semiring_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SemiringName"
+            }
+          },
+          {
+            "name": "probability",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Also compute the probability of each result row. Tuple probabilities are read from the column named by each Table/CSV node's `probabilityColumn` property; tables without one are treated as certain.",
+              "default": false,
+              "title": "Probability"
+            },
+            "description": "Also compute the probability of each result row. Tuple probabilities are read from the column named by each Table/CSV node's `probabilityColumn` property; tables without one are treated as certain."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvenanceAnalyticalPattern"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedProvenanceTaskResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/aps/explanation/{task_id}": {
+      "get": {
+        "tags": [
+          "analytical patterns"
+        ],
+        "summary": "Get Managed Task Status",
+        "description": "Return the current status and (if completed) the result of a managed explanation task.\n\nPoll this endpoint after POST /aps/explanation or POST /aps/explanation/{semiring_name}.",
+        "operationId": "get_managed_task_status_api_v1_aps_explanation__task_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "analytical patterns"
+        ],
+        "summary": "Health Check",
+        "description": "Liveness check \u2014 returns service version info.",
+        "operationId": "health_check_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ready": {
+      "get": {
+        "tags": [
+          "analytical patterns"
+        ],
+        "summary": "Readiness Check",
+        "operationId": "readiness_check_api_v1_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DataSource": {
+        "properties": {
+          "base_node": {
+            "$ref": "#/components/schemas/Node"
+          }
+        },
+        "type": "object",
+        "required": [
+          "base_node"
+        ],
+        "title": "DataSource",
+        "description": "Base class for data sources."
+      },
+      "Edge": {
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "uuid",
+            "title": "From"
+          },
+          "to": {
+            "type": "string",
+            "format": "uuid",
+            "title": "To"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/EdgeLabel"
+            },
+            "type": "array",
+            "title": "Labels"
+          },
+          "properties": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Properties"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "from",
+          "to",
+          "labels"
+        ],
+        "title": "Edge"
+      },
+      "EdgeLabel": {
+        "type": "string",
+        "enum": [
+          "distribution",
+          "recordSet",
+          "linkTo",
+          "containedIn",
+          "field",
+          "source/fileObject",
+          "source/fileSet",
+          "statistics",
+          "intervalStatistics",
+          "dataQuality",
+          "error",
+          "consist_of",
+          "input",
+          "output",
+          "follows",
+          "uses",
+          "is_accomplished_by",
+          "perform_inference",
+          "is_measured_by",
+          "fitted_on",
+          "trained_on",
+          "VIRTUAL_BELONGS_TO",
+          "HAS_COMPARISON",
+          "HAS_EVIDENCE",
+          "HAS_TARGET"
+        ],
+        "title": "EdgeLabel"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ManagedProvenanceTaskResponse": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "pending"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id"
+        ],
+        "title": "ManagedProvenanceTaskResponse"
+      },
+      "Node": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Labels"
+          },
+          "properties": {
+            "patternProperties": {
+              "^[a-z@][a-zA-Z0-9_]*$": {}
+            },
+            "type": "object",
+            "title": "Properties"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "labels",
+          "properties"
+        ],
+        "title": "Node"
+      },
+      "Properties": {
+        "properties": {
+          "mapping": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mapping"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight"
+          },
+          "rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank"
+          },
+          "chunk": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chunk"
+          },
+          "similarityScore": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Similarityscore"
+          }
+        },
+        "type": "object",
+        "title": "Properties"
+      },
+      "ProvenanceAnalyticalPattern": {
+        "properties": {
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/Node"
+            },
+            "type": "array",
+            "title": "Nodes"
+          },
+          "edges": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/Edge"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Edges"
+          },
+          "data_source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DataSource"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "nodes"
+        ],
+        "title": "ProvenanceAnalyticalPattern"
+      },
+      "SemiringName": {
+        "type": "string",
+        "enum": [
+          "formula",
+          "why",
+          "boolexpr",
+          "how",
+          "which"
+        ],
+        "title": "SemiringName"
+      },
+      "TaskStatusResponse": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "started",
+              "success",
+              "failure",
+              "retry",
+              "revoked"
+            ],
+            "title": "Status"
+          },
+          "result": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id",
+          "status"
+        ],
+        "title": "TaskStatusResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

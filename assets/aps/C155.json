@@ -1,0 +1,127 @@
+{
+  "$schema": "https://datagems-dev.scayle.es/moma2/v1/schemas/ap/ap-common.schema.json",
+  "edges": [
+    {
+      "from": "7ee09b1e-92e6-5734-aa7d-9efcf970d774",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "e4481908-85bb-516b-b112-95f5644ca999"
+    },
+    {
+      "from": "7ee09b1e-92e6-5734-aa7d-9efcf970d774",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "078bc405-5ae3-563b-8cee-495f2dedd1c8"
+    },
+    {
+      "from": "078bc405-5ae3-563b-8cee-495f2dedd1c8",
+      "labels": [
+        "follows"
+      ],
+      "to": "e4481908-85bb-516b-b112-95f5644ca999"
+    },
+    {
+      "from": "dbe6e0a5-8257-59de-9111-f77e462c20e7",
+      "labels": [
+        "input"
+      ],
+      "to": "e4481908-85bb-516b-b112-95f5644ca999"
+    },
+    {
+      "from": "dbe6e0a5-8257-59de-9111-f77e462c20e7",
+      "labels": [
+        "input"
+      ],
+      "to": "078bc405-5ae3-563b-8cee-495f2dedd1c8"
+    },
+    {
+      "from": "dbe6e0a5-8257-59de-9111-f77e462c20e7",
+      "labels": [
+        "containedIn"
+      ],
+      "to": "a1109cc8-3c43-5b32-b5c5-506ff6d3a8d5"
+    },
+    {
+      "from": "dbe6e0a5-8257-59de-9111-f77e462c20e7",
+      "labels": [
+        "containedIn"
+      ],
+      "to": "8fa30fb0-2de9-57c6-9263-11eb6cec84f4"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "7ee09b1e-92e6-5734-aa7d-9efcf970d774",
+      "labels": [
+        "Analytical_Pattern"
+      ],
+      "properties": {
+        "name": "Meteo C155 AP",
+        "description": "Show latitude and longitude of the highest wind speed in City of Zurich between 2018 and 2019",
+        "process": "query",
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00"
+      }
+    },
+    {
+      "id": "e4481908-85bb-516b-b112-95f5644ca999",
+      "labels": [
+        "Operator",
+        "Provenance_Annotate_Dataset_Operator"
+      ],
+      "properties": {
+        "name": "Annotate Meteo Dataset Operator",
+        "description": "Annotate the meteo tables with provenance information",
+        "dataset": "meteo"
+      }
+    },
+    {
+      "id": "078bc405-5ae3-563b-8cee-495f2dedd1c8",
+      "labels": [
+        "Operator",
+        "Provenance_SQL_Operator"
+      ],
+      "properties": {
+        "name": "C155 SQL Query Operator",
+        "description": "Show latitude and longitude of the highest wind speed in City of Zurich between 2018 and 2019",
+        "command": "query",
+        "queryType": "SELECT",
+        "type": "SQL Query",
+        "step": 1,
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00",
+        "query": "SELECT\n  w.latitude AS latitude,\n  w.longitude AS longitude,\n  w.windspeedmax AS max_wind_speed\nFROM meteo_windspeedmax AS w\nINNER JOIN meteo_elevation AS e\n  ON ROUND(CAST(w.latitude AS DECIMAL), 1) = ROUND(CAST(e.latitude AS DECIMAL), 1)\n  AND ROUND(CAST(w.longitude AS DECIMAL), 1) = ROUND(CAST(e.longitude AS DECIMAL), 1)\nWHERE\n  EXTRACT(YEAR FROM w.time) BETWEEN 2018 AND 2019\n  AND (ROUND(CAST(w.latitude AS DECIMAL), 1), ROUND(CAST(w.longitude AS DECIMAL), 1)) IN ((47.4, 8.5))\nORDER BY\n  w.windspeedmax DESC\nLIMIT 1"
+      }
+    },
+    {
+      "id": "dbe6e0a5-8257-59de-9111-f77e462c20e7",
+      "labels": [
+        "RelationalDatabase"
+      ],
+      "properties": {
+        "name": "meteo",
+        "description": "Meteorological database (ERA5-Land schema)"
+      }
+    },
+    {
+      "id": "a1109cc8-3c43-5b32-b5c5-506ff6d3a8d5",
+      "labels": [
+        "Table"
+      ],
+      "properties": {
+        "name": "meteo.meteo_elevation"
+      }
+    },
+    {
+      "id": "8fa30fb0-2de9-57c6-9263-11eb6cec84f4",
+      "labels": [
+        "Table"
+      ],
+      "properties": {
+        "name": "meteo.meteo_windspeedmax"
+      }
+    }
+  ]
+}

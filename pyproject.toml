@@ -1,0 +1,23 @@
+[project]
+name = "demo-ap-explanation"
+version = "0.1.0"
+description = "Streamlit demo of weather questions explained with provenance by ap-explanation"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "httpx>=0.28.1",
+    "psycopg[binary]>=3.2.10",
+    "streamlit>=1.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "microsoft-kiota-abstractions>=1.9.9",
+    "microsoft-kiota-http>=1.9.9",
+    "microsoft-kiota-serialization-form>=1.9.9",
+    "microsoft-kiota-serialization-json>=1.9.9",
+    "microsoft-kiota-serialization-multipart>=1.9.9",
+    "microsoft-kiota-serialization-text>=1.9.9",
+    # scripts/memory_analysis.py
+    "sqlglot>=27.0.0",
+]

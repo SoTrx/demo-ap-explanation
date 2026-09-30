@@ -1,0 +1,148 @@
+{
+  "ap": "C155.json",
+  "plain": {
+    "columns": [
+      "latitude",
+      "longitude",
+      "max_wind_speed"
+    ],
+    "rows": [
+      [
+        47.4,
+        8.5,
+        10.3
+      ]
+    ],
+    "seconds": 23.7
+  },
+  "request": "POST /api/v1/aps/explanation?probability=false",
+  "seconds": 37.0,
+  "task_id": "d1d88772-2bc3-4427-9f48-39913e876bb9",
+  "status": "success",
+  "result": {
+    "derivations": [
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "max_wind_speed": 10.3
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40 ⊗ meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea",
+            "data": [
+              {
+                "reference": "meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2018-01-03T00:00:00",
+                  "windspeedmax": 10.3
+                }
+              },
+              {
+                "reference": "meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea",
+                "data": {
+                  "latitude": 47.3501,
+                  "longitude": 8.5396,
+                  "elevation": 400.0
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea,meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40}}",
+            "data": [
+              {
+                "reference": "meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea",
+                "data": {
+                  "latitude": 47.3501,
+                  "longitude": 8.5396,
+                  "elevation": 400.0
+                }
+              },
+              {
+                "reference": "meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2018-01-03T00:00:00",
+                  "windspeedmax": 10.3
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40 ∧ meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea",
+            "data": [
+              {
+                "reference": "meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2018-01-03T00:00:00",
+                  "windspeedmax": 10.3
+                }
+              },
+              {
+                "reference": "meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea",
+                "data": {
+                  "latitude": 47.3501,
+                  "longitude": 8.5396,
+                  "elevation": 400.0
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea⋅meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40",
+            "data": [
+              {
+                "reference": "meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea",
+                "data": {
+                  "latitude": 47.3501,
+                  "longitude": 8.5396,
+                  "elevation": 400.0
+                }
+              },
+              {
+                "reference": "meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2018-01-03T00:00:00",
+                  "windspeedmax": 10.3
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea,meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40}",
+            "data": [
+              {
+                "reference": "meteo_elevation@k1a7de4da1c00485db1af404c637ce4ea",
+                "data": {
+                  "latitude": 47.3501,
+                  "longitude": 8.5396,
+                  "elevation": 400.0
+                }
+              },
+              {
+                "reference": "meteo_windspeedmax@kf87a72b79e314591a6a6f0cd25514c40",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2018-01-03T00:00:00",
+                  "windspeedmax": 10.3
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      }
+    ],
+    "explanation": "\n\n### Query intent\n\nThe query asks for the latitude, longitude, and maximum wind speed from the maximum wind speed weather records, but only for a location whose rounded coordinates match the point at latitude 47.4 and longitude 8.5.\n\nIt restricts the answer to measurements recorded during 2018 or 2019. It also requires that the location have a corresponding terrain elevation record whose rounded coordinates match the same location cell. Among all qualifying maximum wind speed records, the query keeps only the one with the highest reported maximum wind speed.\n\n### Result explanation\n\nThe result `{'latitude': 47.4, 'longitude': 8.5, 'max_wind_speed': 10.3}` means that, for the approximate location identified by latitude 47.4 and longitude 8.5, the strongest qualifying maximum wind speed measurement found in the weather records is 10.3.\n\nThis also means that this location is associated with at least one terrain elevation record whose actual coordinates belong to the same rounded location cell, confirming that the wind speed measurement is supported by location information from the elevation data.\n\n### Provenance explanation\n\nThe provenance tells us that we obtained this result because one wind speed record and one terrain elevation record were matched together.\n\nThe maximum wind speed record represents a weather observation at latitude 47.4 and longitude 8.5, recorded on 3 January 2018, with a reported maximum wind speed of 10.3. This record satisfies the time requirement because its year is within the requested range, and it satisfies the location requirement because its coordinates are exactly the requested rounded location.\n\nThe terrain elevation record represents an elevation observation at latitude 47.3501 and longitude 8.5396, with an elevation of 400.0. Although its exact coordinates are not identical to the requested location, they round to latitude 47.4 and longitude 8.5 when coordinates are grouped at one decimal place. Therefore, it is considered to belong to the same approximate location as the wind speed observation.\n\nTogether, these two records justify the result: the wind speed record provides the returned coordinates and the maximum wind speed value, while the elevation record confirms that the location exists in the terrain elevation data for the same rounded area. Because the query keeps only the highest qualifying wind speed, the returned value 10.3 is presented as the representative maximum wind speed for that location during 2018–2019."
+  },
+  "error": null
+}

@@ -1,0 +1,873 @@
+{
+  "ap": "G81.json",
+  "plain": {
+    "columns": [
+      "latitude",
+      "longitude",
+      "min_temp_in_celsius"
+    ],
+    "rows": [
+      [
+        47.4,
+        8.5,
+        10.300000000000011
+      ],
+      [
+        47.4,
+        8.5,
+        11.200000000000045
+      ],
+      [
+        47.4,
+        8.5,
+        11.700000000000045
+      ],
+      [
+        47.4,
+        8.5,
+        12.900000000000034
+      ],
+      [
+        47.4,
+        8.5,
+        13.100000000000023
+      ],
+      [
+        47.4,
+        8.5,
+        14.0
+      ],
+      [
+        47.4,
+        8.5,
+        14.300000000000011
+      ],
+      [
+        47.4,
+        8.5,
+        14.900000000000034
+      ],
+      [
+        47.4,
+        8.5,
+        15.200000000000045
+      ],
+      [
+        47.4,
+        8.5,
+        15.200000000000045
+      ]
+    ],
+    "seconds": 0.0
+  },
+  "request": "POST /api/v1/aps/explanation?probability=false",
+  "seconds": 28.6,
+  "task_id": "0ea52b7f-9bef-49e5-a160-dc21f8cd5075",
+  "status": "success",
+  "result": {
+    "derivations": [
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 10.300000000000011
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d",
+            "data": [
+              {
+                "reference": "meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-31T00:00:00",
+                  "tmin": 283.45
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-31T00:00:00",
+                  "tmin": 283.45
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d",
+            "data": [
+              {
+                "reference": "meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-31T00:00:00",
+                  "tmin": 283.45
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d",
+            "data": [
+              {
+                "reference": "meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-31T00:00:00",
+                  "tmin": 283.45
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-31T00:00:00",
+                  "tmin": 283.45
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 11.200000000000045
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k880bbc41c61943d79c824dd488bd8e65",
+            "data": [
+              {
+                "reference": "meteo_tmin@k880bbc41c61943d79c824dd488bd8e65",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-10T00:00:00",
+                  "tmin": 284.35
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@k880bbc41c61943d79c824dd488bd8e65}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k880bbc41c61943d79c824dd488bd8e65",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-10T00:00:00",
+                  "tmin": 284.35
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@k880bbc41c61943d79c824dd488bd8e65",
+            "data": [
+              {
+                "reference": "meteo_tmin@k880bbc41c61943d79c824dd488bd8e65",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-10T00:00:00",
+                  "tmin": 284.35
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@k880bbc41c61943d79c824dd488bd8e65",
+            "data": [
+              {
+                "reference": "meteo_tmin@k880bbc41c61943d79c824dd488bd8e65",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-10T00:00:00",
+                  "tmin": 284.35
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@k880bbc41c61943d79c824dd488bd8e65}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k880bbc41c61943d79c824dd488bd8e65",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-10T00:00:00",
+                  "tmin": 284.35
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 11.700000000000045
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17",
+            "data": [
+              {
+                "reference": "meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-30T00:00:00",
+                  "tmin": 284.85
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-30T00:00:00",
+                  "tmin": 284.85
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17",
+            "data": [
+              {
+                "reference": "meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-30T00:00:00",
+                  "tmin": 284.85
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17",
+            "data": [
+              {
+                "reference": "meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-30T00:00:00",
+                  "tmin": 284.85
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17}",
+            "data": [
+              {
+                "reference": "meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-30T00:00:00",
+                  "tmin": 284.85
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 12.900000000000034
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-26T00:00:00",
+                  "tmin": 286.05
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-26T00:00:00",
+                  "tmin": 286.05
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-26T00:00:00",
+                  "tmin": 286.05
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-26T00:00:00",
+                  "tmin": 286.05
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af}",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-26T00:00:00",
+                  "tmin": 286.05
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 13.100000000000023
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k5aa02e52223b47389e39323cffaeeb31",
+            "data": [
+              {
+                "reference": "meteo_tmin@k5aa02e52223b47389e39323cffaeeb31",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-29T00:00:00",
+                  "tmin": 286.25
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@k5aa02e52223b47389e39323cffaeeb31}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k5aa02e52223b47389e39323cffaeeb31",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-29T00:00:00",
+                  "tmin": 286.25
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@k5aa02e52223b47389e39323cffaeeb31",
+            "data": [
+              {
+                "reference": "meteo_tmin@k5aa02e52223b47389e39323cffaeeb31",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-29T00:00:00",
+                  "tmin": 286.25
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@k5aa02e52223b47389e39323cffaeeb31",
+            "data": [
+              {
+                "reference": "meteo_tmin@k5aa02e52223b47389e39323cffaeeb31",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-29T00:00:00",
+                  "tmin": 286.25
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@k5aa02e52223b47389e39323cffaeeb31}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k5aa02e52223b47389e39323cffaeeb31",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-29T00:00:00",
+                  "tmin": 286.25
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 14.0
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1",
+            "data": [
+              {
+                "reference": "meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-28T00:00:00",
+                  "tmin": 287.15
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-28T00:00:00",
+                  "tmin": 287.15
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1",
+            "data": [
+              {
+                "reference": "meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-28T00:00:00",
+                  "tmin": 287.15
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1",
+            "data": [
+              {
+                "reference": "meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-28T00:00:00",
+                  "tmin": 287.15
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1}",
+            "data": [
+              {
+                "reference": "meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-28T00:00:00",
+                  "tmin": 287.15
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 14.300000000000011
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k83882d69535c461893eaa6441246a75d",
+            "data": [
+              {
+                "reference": "meteo_tmin@k83882d69535c461893eaa6441246a75d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-09T00:00:00",
+                  "tmin": 287.45
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@k83882d69535c461893eaa6441246a75d}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k83882d69535c461893eaa6441246a75d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-09T00:00:00",
+                  "tmin": 287.45
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@k83882d69535c461893eaa6441246a75d",
+            "data": [
+              {
+                "reference": "meteo_tmin@k83882d69535c461893eaa6441246a75d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-09T00:00:00",
+                  "tmin": 287.45
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@k83882d69535c461893eaa6441246a75d",
+            "data": [
+              {
+                "reference": "meteo_tmin@k83882d69535c461893eaa6441246a75d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-09T00:00:00",
+                  "tmin": 287.45
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@k83882d69535c461893eaa6441246a75d}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k83882d69535c461893eaa6441246a75d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-09T00:00:00",
+                  "tmin": 287.45
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 14.900000000000034
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k36daa849cd7641049f52db507751bfa2",
+            "data": [
+              {
+                "reference": "meteo_tmin@k36daa849cd7641049f52db507751bfa2",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-11T00:00:00",
+                  "tmin": 288.05
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@k36daa849cd7641049f52db507751bfa2}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k36daa849cd7641049f52db507751bfa2",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-11T00:00:00",
+                  "tmin": 288.05
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@k36daa849cd7641049f52db507751bfa2",
+            "data": [
+              {
+                "reference": "meteo_tmin@k36daa849cd7641049f52db507751bfa2",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-11T00:00:00",
+                  "tmin": 288.05
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@k36daa849cd7641049f52db507751bfa2",
+            "data": [
+              {
+                "reference": "meteo_tmin@k36daa849cd7641049f52db507751bfa2",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-11T00:00:00",
+                  "tmin": 288.05
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@k36daa849cd7641049f52db507751bfa2}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k36daa849cd7641049f52db507751bfa2",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-11T00:00:00",
+                  "tmin": 288.05
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 15.200000000000045
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@kf4e2c788a5834144b80a8de328b7398c",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf4e2c788a5834144b80a8de328b7398c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-27T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@kf4e2c788a5834144b80a8de328b7398c}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf4e2c788a5834144b80a8de328b7398c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-27T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@kf4e2c788a5834144b80a8de328b7398c",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf4e2c788a5834144b80a8de328b7398c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-27T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@kf4e2c788a5834144b80a8de328b7398c",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf4e2c788a5834144b80a8de328b7398c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-27T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@kf4e2c788a5834144b80a8de328b7398c}",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf4e2c788a5834144b80a8de328b7398c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-27T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "min_temp_in_celsius": 15.200000000000045
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k3f225189854b4af283e7d409437baa3b",
+            "data": [
+              {
+                "reference": "meteo_tmin@k3f225189854b4af283e7d409437baa3b",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-25T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          },
+          "why": {
+            "expression": "{{meteo_tmin@k3f225189854b4af283e7d409437baa3b}}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k3f225189854b4af283e7d409437baa3b",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-25T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          },
+          "boolexpr": {
+            "expression": "meteo_tmin@k3f225189854b4af283e7d409437baa3b",
+            "data": [
+              {
+                "reference": "meteo_tmin@k3f225189854b4af283e7d409437baa3b",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-25T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          },
+          "how": {
+            "expression": "meteo_tmin@k3f225189854b4af283e7d409437baa3b",
+            "data": [
+              {
+                "reference": "meteo_tmin@k3f225189854b4af283e7d409437baa3b",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-25T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          },
+          "which": {
+            "expression": "{meteo_tmin@k3f225189854b4af283e7d409437baa3b}",
+            "data": [
+              {
+                "reference": "meteo_tmin@k3f225189854b4af283e7d409437baa3b",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-07-25T00:00:00",
+                  "tmin": 288.35
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      }
+    ],
+    "explanation": "\n\n### Query intent\n\nThe query asks for the **location** and the **daily minimum air temperature, expressed in Celsius**, for meteorological minimum-temperature observations recorded in **July 2015** at the weather location identified as **latitude 47.4 and longitude 8.5** when coordinates are rounded to one decimal place. It then keeps the **ten coldest minimum-temperature observations** at that location, sorted from lowest to highest temperature.\n\n---\n\n### Result explanation\n\nThe result \n\n```text\n(47.4, 8.5, 10.30),\n(47.4, 8.5, 11.20),\n(47.4, 8.5, 11.70),\n(47.4, 8.5, 12.90),\n(47.4, 8.5, 13.10),\n(47.4, 8.5, 14.00),\n(47.4, 8.5, 14.30),\n(47.4, 8.5, 14.90),\n(47.4, 8.5, 15.20),\n(47.4, 8.5, 15.20)\n```\n\nmeans that, for the weather location **(47.4, 8.5)**, the minimum-temperature records from **July 2015** show these as the **ten lowest daily minimum temperatures** available in the data. Each row reports:\n\n- the observation location: latitude **47.4**, longitude **8.5**;\n- the converted minimum temperature in degrees Celsius.\n\nFor example, the first row means that at this location, the minimum temperature was about **10.3 °C**, which corresponds to the recorded minimum-temperature value **283.45** after conversion. The last two rows both report about **15.2 °C**, but they come from two separate observations on different days.\n\n---\n\n### Provenance explanation\n\nThe provenance tells us that we obtained this result because:\n\nEach result row is derived independently from **one minimum-temperature record** in the `meteo_tmin` table. There is no combination with other tables or other records; each supporting record by itself satisfies the conditions for location, date, and minimum temperature conversion.\n\n#### 1. Record `meteo_tmin@k94bf4df52a1b4e3ea5cd00b52431b22d`\n\nThis is a minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **31 July 2015**\n- recorded minimum temperature: **283.45**\n\nBecause its location matches the requested rounded coordinates and its date is in July 2015, it qualifies. Its recorded minimum temperature is converted to Celsius, producing about **10.30 °C**. This record is the coldest qualifying observation, so it appears first in the result.\n\n---\n\n#### 2. Record `meteo_tmin@k880bbc41c61943d79c824dd488bd8e65`\n\nThis is a minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **10 July 2015**\n- recorded minimum temperature: **284.35**\n\nIt qualifies because it is also a July 2015 observation at the requested location. Converted to Celsius, it gives about **11.20 °C**, making it the second coldest qualifying observation.\n\n---\n\n#### 3. Record `meteo_tmin@ke716b8f86adb4b70826e89b9c1a25f17`\n\nThis is a minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **30 July 2015**\n- recorded minimum temperature: **284.85**\n\nIt qualifies as a July 2015 observation at the requested location. Its converted minimum temperature is about **11.70 °C**, so it appears as the third result row.\n\n---\n\n#### 4. Record `meteo_tmin@kf116fb66422a4db68ca0b8bdf219e1af`\n\nThis is a minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **26 July 2015**\n- recorded minimum temperature: **286.05**\n\nIt qualifies because it is at the requested location during July 2015. Converted to Celsius, the value is about **12.90 °C**, so it contributes the fourth result row.\n\n---\n\n#### 5. Record `meteo_tmin@k5aa02e52223b47389e39323cffaeeb31`\n\nThis is a minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **29 July 2015**\n- recorded minimum temperature: **286.25**\n\nIt qualifies as a July 2015 minimum-temperature observation at the requested location. Its converted temperature is about **13.10 °C**, contributing the fifth result row.\n\n---\n\n#### 6. Record `meteo_tmin@kcf36b1fe2a3b4b8a9c01700213e71ae1`\n\nThis is a minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **28 July 2015**\n- recorded minimum temperature: **287.15**\n\nIt qualifies because it is located at the requested coordinates and recorded during July 2015. Its converted Celsius value is about **14.00 °C**, contributing the sixth result row.\n\n---\n\n#### 7. Record `meteo_tmin@k83882d69535c461893eaa6441246a75d`\n\nThis is a minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **9 July 2015**\n- recorded minimum temperature: **287.45**\n\nIt qualifies as a July 2015 observation at the requested location. Its converted value is about **14.30 °C**, contributing the seventh result row.\n\n---\n\n#### 8. Record `meteo_tmin@k36daa849cd7641049f52db507751bfa2`\n\nThis is a minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **11 July 2015**\n- recorded minimum temperature: **288.05**\n\nIt qualifies because it is a July 2015 minimum-temperature record at the requested location. Its converted Celsius value is about **14.90 °C**, contributing the eighth result row.\n\n---\n\n#### 9. Record `meteo_tmin@kf4e2c788a5834144b80a8de328b7398c`\n\nThis is a minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **27 July 2015**\n- recorded minimum temperature: **288.35**\n\nIt qualifies as a July 2015 observation at the requested location. Its converted value is about **15.20 °C**, contributing one of the two final result rows.\n\n---\n\n#### 10. Record `meteo_tmin@k3f225189854b4af283e7d409437baa3b`\n\nThis is another minimum-temperature observation with:\n\n- latitude: **47.4**\n- longitude: **8.5**\n- observation date: **25 July 2015**\n- recorded minimum temperature: **288.35**\n\nIt is separate from the previous record but has the same converted value, about **15.20 °C**. Because it is also a qualifying July 2015 observation at the requested location, it independently contributes the tenth result row.\n\n---\n\nIn summary, the result appears because **ten distinct minimum-temperature records** from the `meteo_tmin` table all represent observations in **July 2015** at the location **latitude 47.4, longitude 8.5**, and each one’s stored minimum-temperature value is converted into Celsius. The provenance formulas show that no cross-table relationship or combined evidence was needed: each returned row is directly supported by its own weather observation record."
+  },
+  "error": null
+}

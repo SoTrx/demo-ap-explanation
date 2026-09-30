@@ -1,0 +1,2408 @@
+{
+  "ap": "K247.json",
+  "plain": {
+    "columns": [
+      "time_window_2",
+      "latitude",
+      "longitude",
+      "time_window_3"
+    ],
+    "rows": [
+      [
+        22,
+        47.4,
+        8.5,
+        "2005"
+      ],
+      [
+        29,
+        47.4,
+        8.5,
+        "2006"
+      ],
+      [
+        9,
+        47.4,
+        8.5,
+        "2007"
+      ],
+      [
+        18,
+        47.4,
+        8.5,
+        "2008"
+      ],
+      [
+        31,
+        47.4,
+        8.5,
+        "2009"
+      ],
+      [
+        31,
+        47.4,
+        8.5,
+        "2010"
+      ],
+      [
+        19,
+        47.4,
+        8.5,
+        "2011"
+      ],
+      [
+        16,
+        47.4,
+        8.5,
+        "2012"
+      ],
+      [
+        24,
+        47.4,
+        8.5,
+        "2013"
+      ],
+      [
+        16,
+        47.4,
+        8.5,
+        "2014"
+      ],
+      [
+        23,
+        47.4,
+        8.5,
+        "2015"
+      ]
+    ],
+    "seconds": 0.0
+  },
+  "request": "POST /api/v1/aps/explanation?probability=false",
+  "seconds": 38.7,
+  "task_id": "c1158a09-1311-4e8e-af0f-5f6458dcb56f",
+  "status": "success",
+  "result": {
+    "derivations": [
+      {
+        "answer": {
+          "time_window_2": "22 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2005"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k39f32a24246648d380fbd1771c6ebc5f*1+meteo_tmin@k42a020f4f6c54e69ae7542c088d4900a*1+meteo_tmin@kc353e41adf0b4016b23619e35c6a857c*1+meteo_tmin@k2fb5dc08d2a748e4b3c36c2fc0e25a0d*1+meteo_tmin@k846eeb7097674a908481843f896276de*1+meteo_tmin@kcfa9cd493e5d48019205e1b2ff830842*1+meteo_tmin@k619bbc4cd79e4742a0fc63f6af60a607*1+meteo_tmin@k72387e4bf96149668c4933fb5633c80d*1+meteo_tmin@k4078d9e2924e4dba90f0642f34bebe5f*1+meteo_tmin@k67a87714155a4c97a4ae48222812e404*1+meteo_tmin@kf0f08033d50047e3b554da4ef12e771f*1+meteo_tmin@k56d49d5620db4da486cf52a9397aa173*1+meteo_tmin@k6b6cab2dd6094dacac2905a0a380ef6c*1+meteo_tmin@k803b31b019ca4e5b9f5bd9f222bf3686*1+meteo_tmin@k6e5095c5ac2842dc865afceea7a82736*1+meteo_tmin@k283348d3b6e64e4d87ac8a7e9cbb8f55*1+meteo_tmin@k8771af8c27144af888038a22dfb41b8d*1+meteo_tmin@k09f26713c4c54d8c9010ec448609ca22*1+meteo_tmin@k9f304ea38077419ab88f0c2c73100331*1+meteo_tmin@k2b47408a954f4a2489336c5897474e8d*1+meteo_tmin@kae70cb99b34843a99ac4925534da4940*1+meteo_tmin@k9086f0198ca044a29e3ae28b2e48e47d*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@k39f32a24246648d380fbd1771c6ebc5f",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-03T00:00:00",
+                  "tmin": 272.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k42a020f4f6c54e69ae7542c088d4900a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-04T00:00:00",
+                  "tmin": 272.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@kc353e41adf0b4016b23619e35c6a857c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-05T00:00:00",
+                  "tmin": 272.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k2fb5dc08d2a748e4b3c36c2fc0e25a0d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-07T00:00:00",
+                  "tmin": 272.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k846eeb7097674a908481843f896276de",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-08T00:00:00",
+                  "tmin": 272.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@kcfa9cd493e5d48019205e1b2ff830842",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-14T00:00:00",
+                  "tmin": 270.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k619bbc4cd79e4742a0fc63f6af60a607",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-15T00:00:00",
+                  "tmin": 269.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k72387e4bf96149668c4933fb5633c80d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-16T00:00:00",
+                  "tmin": 271.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k4078d9e2924e4dba90f0642f34bebe5f",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-17T00:00:00",
+                  "tmin": 270.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k67a87714155a4c97a4ae48222812e404",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-18T00:00:00",
+                  "tmin": 271.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf0f08033d50047e3b554da4ef12e771f",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-19T00:00:00",
+                  "tmin": 270.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k56d49d5620db4da486cf52a9397aa173",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-20T00:00:00",
+                  "tmin": 270.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k6b6cab2dd6094dacac2905a0a380ef6c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-22T00:00:00",
+                  "tmin": 273.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k803b31b019ca4e5b9f5bd9f222bf3686",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-23T00:00:00",
+                  "tmin": 269.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k6e5095c5ac2842dc865afceea7a82736",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-24T00:00:00",
+                  "tmin": 268.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k283348d3b6e64e4d87ac8a7e9cbb8f55",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-25T00:00:00",
+                  "tmin": 267.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k8771af8c27144af888038a22dfb41b8d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-26T00:00:00",
+                  "tmin": 265.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k09f26713c4c54d8c9010ec448609ca22",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-27T00:00:00",
+                  "tmin": 262.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9f304ea38077419ab88f0c2c73100331",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-28T00:00:00",
+                  "tmin": 264.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k2b47408a954f4a2489336c5897474e8d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-29T00:00:00",
+                  "tmin": 261.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@kae70cb99b34843a99ac4925534da4940",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-30T00:00:00",
+                  "tmin": 261.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9086f0198ca044a29e3ae28b2e48e47d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2005-01-31T00:00:00",
+                  "tmin": 268.45
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "29 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2006"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k6cb4ac7d631b46ecb3398f4b17c0f155*1+meteo_tmin@k8f68d88597c54f3eab6bc71811c00793*1+meteo_tmin@ke5b83c36dd5a460f8b119f22d561f45d*1+meteo_tmin@k307f95ca218141499c67465ec4177f75*1+meteo_tmin@kfc85623598f147a4be561697fdcec12c*1+meteo_tmin@k1fdf136968564bbcbd68562981ab200e*1+meteo_tmin@kd7966f981cf747f6a6100bdc614dc00d*1+meteo_tmin@k3782bb340344400ab7a416d44c54cfa4*1+meteo_tmin@k49c70c487325421086d428f5d6712dd1*1+meteo_tmin@k8c8f70c1c80246ac95456d3874708c59*1+meteo_tmin@kd8dc895245034f43a4f0700c3e7b7357*1+meteo_tmin@kdfe8c1cf01684927a6c6327ea8394cfe*1+meteo_tmin@k98ab7f9418fd418d91920d109097c8a5*1+meteo_tmin@k3701c6d8c76940e88646edee0ce9430d*1+meteo_tmin@k1d90d21778044de78e5cd673d0469dcf*1+meteo_tmin@k926c6156ade94811b04408d21d4b8a88*1+meteo_tmin@k7d07b7c1af5e45fcbd9208e28afa1146*1+meteo_tmin@k4026e9277ef849df80e3b98b5ec205f5*1+meteo_tmin@k9576026ec2c74c9c8e00ebeb7f0269aa*1+meteo_tmin@k38009fc7ccd84e789e06e9ddbf3fcff3*1+meteo_tmin@kb6656b132c104d889062a051d9208c37*1+meteo_tmin@k81af0aee1f4f4867a86523c49ab409e8*1+meteo_tmin@k36d1f5151ac84076b51148b47b012165*1+meteo_tmin@kf1f16ab1cde1472494cfc149a814c0db*1+meteo_tmin@k8cbf4446abcd4f47b0051fb785efae34*1+meteo_tmin@k474677c3c0a74e01b188089405f1bed2*1+meteo_tmin@k97a75d4eba13430798b0cbba0a320968*1+meteo_tmin@k75b1b551b4d444d19a561a6ddc1fe61a*1+meteo_tmin@kfa61956ea82849c0a40268d2686c32a3*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@k6cb4ac7d631b46ecb3398f4b17c0f155",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-01T00:00:00",
+                  "tmin": 272.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k8f68d88597c54f3eab6bc71811c00793",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-02T00:00:00",
+                  "tmin": 271.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke5b83c36dd5a460f8b119f22d561f45d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-03T00:00:00",
+                  "tmin": 268.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k307f95ca218141499c67465ec4177f75",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-04T00:00:00",
+                  "tmin": 268.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@kfc85623598f147a4be561697fdcec12c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-05T00:00:00",
+                  "tmin": 269.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k1fdf136968564bbcbd68562981ab200e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-06T00:00:00",
+                  "tmin": 270.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@kd7966f981cf747f6a6100bdc614dc00d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-07T00:00:00",
+                  "tmin": 270.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k3782bb340344400ab7a416d44c54cfa4",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-08T00:00:00",
+                  "tmin": 270.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k49c70c487325421086d428f5d6712dd1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-09T00:00:00",
+                  "tmin": 269.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k8c8f70c1c80246ac95456d3874708c59",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-10T00:00:00",
+                  "tmin": 269.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@kd8dc895245034f43a4f0700c3e7b7357",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-11T00:00:00",
+                  "tmin": 268.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@kdfe8c1cf01684927a6c6327ea8394cfe",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-12T00:00:00",
+                  "tmin": 270.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k98ab7f9418fd418d91920d109097c8a5",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-13T00:00:00",
+                  "tmin": 270.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k3701c6d8c76940e88646edee0ce9430d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-14T00:00:00",
+                  "tmin": 267.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k1d90d21778044de78e5cd673d0469dcf",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-15T00:00:00",
+                  "tmin": 266.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k926c6156ade94811b04408d21d4b8a88",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-16T00:00:00",
+                  "tmin": 267.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k7d07b7c1af5e45fcbd9208e28afa1146",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-17T00:00:00",
+                  "tmin": 270.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k4026e9277ef849df80e3b98b5ec205f5",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-20T00:00:00",
+                  "tmin": 272.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9576026ec2c74c9c8e00ebeb7f0269aa",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-21T00:00:00",
+                  "tmin": 272.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k38009fc7ccd84e789e06e9ddbf3fcff3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-22T00:00:00",
+                  "tmin": 271.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@kb6656b132c104d889062a051d9208c37",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-23T00:00:00",
+                  "tmin": 266.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k81af0aee1f4f4867a86523c49ab409e8",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-24T00:00:00",
+                  "tmin": 265.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k36d1f5151ac84076b51148b47b012165",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-25T00:00:00",
+                  "tmin": 267.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf1f16ab1cde1472494cfc149a814c0db",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-26T00:00:00",
+                  "tmin": 268.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k8cbf4446abcd4f47b0051fb785efae34",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-27T00:00:00",
+                  "tmin": 268.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k474677c3c0a74e01b188089405f1bed2",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-28T00:00:00",
+                  "tmin": 269.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k97a75d4eba13430798b0cbba0a320968",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-29T00:00:00",
+                  "tmin": 271.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k75b1b551b4d444d19a561a6ddc1fe61a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-30T00:00:00",
+                  "tmin": 270.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@kfa61956ea82849c0a40268d2686c32a3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2006-01-31T00:00:00",
+                  "tmin": 270.75
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "9 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2007"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k776a4647dcd6411c8870d70d063e1116*1+meteo_tmin@k679dfb1f94b443889f5c6b670276b021*1+meteo_tmin@k3e263165e54e4ae68fd92e5551fee893*1+meteo_tmin@k67f00208aae14294ac77f29c067282d0*1+meteo_tmin@k9c7e6aebfb57481abe19479e2ff06cc8*1+meteo_tmin@kc3054e4eee6641ac90908b6ea1d3cc9a*1+meteo_tmin@kbf3e4385d5c84e788a6b4823d5063185*1+meteo_tmin@ka9b2c548c8d24dbeb90ac9e1a9ac21ff*1+meteo_tmin@kc465cd9f581842a6ad2ce15e1d4e9c93*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@k776a4647dcd6411c8870d70d063e1116",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2007-01-23T00:00:00",
+                  "tmin": 271.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k679dfb1f94b443889f5c6b670276b021",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2007-01-24T00:00:00",
+                  "tmin": 265.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k3e263165e54e4ae68fd92e5551fee893",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2007-01-25T00:00:00",
+                  "tmin": 264.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k67f00208aae14294ac77f29c067282d0",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2007-01-26T00:00:00",
+                  "tmin": 264.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9c7e6aebfb57481abe19479e2ff06cc8",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2007-01-27T00:00:00",
+                  "tmin": 265.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@kc3054e4eee6641ac90908b6ea1d3cc9a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2007-01-28T00:00:00",
+                  "tmin": 270.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@kbf3e4385d5c84e788a6b4823d5063185",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2007-01-29T00:00:00",
+                  "tmin": 269.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka9b2c548c8d24dbeb90ac9e1a9ac21ff",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2007-01-30T00:00:00",
+                  "tmin": 272.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@kc465cd9f581842a6ad2ce15e1d4e9c93",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2007-01-31T00:00:00",
+                  "tmin": 272.15
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "18 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2008"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k3fbe637c627c4e438b133079cd8f9b13*1+meteo_tmin@k346502be92e343b1890da3ae9befbc61*1+meteo_tmin@kc718f39c0a4d47319b7079b58a3db10b*1+meteo_tmin@k141d15dcd0a1410c9758857d3a1f25e3*1+meteo_tmin@k053f7f7bac69434d99d02004239d055c*1+meteo_tmin@k588c2b61dfe14570b883a8d135bf97ad*1+meteo_tmin@kc131c9e60a0d4d8b85f5a7b10da962e5*1+meteo_tmin@kd0e7fda95f75488c90c56cd0ba0612d8*1+meteo_tmin@kaea9c8b102034705bf81c55d51d0e4e1*1+meteo_tmin@k4b4b7a65de5040888b05727889c9c1f0*1+meteo_tmin@k5bc90fc76cb74e6894cd10e05e077858*1+meteo_tmin@k1e4ccec281044834aa24dcee6d542625*1+meteo_tmin@k7a1feea61dcc456db84dbcbf69058512*1+meteo_tmin@k7af0ccc293f2437bbcd89cbf288ee351*1+meteo_tmin@kcb6534deb06048b597b9cef00dfff7fc*1+meteo_tmin@k76fa7b3bef48465faf557b97cbe1a0f4*1+meteo_tmin@keac29bc5f0b44e7db033ba6d1ed9975c*1+meteo_tmin@k813ce3f243b44a198ea664f5b689ef4f*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@k3fbe637c627c4e438b133079cd8f9b13",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-01T00:00:00",
+                  "tmin": 269.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k346502be92e343b1890da3ae9befbc61",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-02T00:00:00",
+                  "tmin": 269.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@kc718f39c0a4d47319b7079b58a3db10b",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-03T00:00:00",
+                  "tmin": 270.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k141d15dcd0a1410c9758857d3a1f25e3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-04T00:00:00",
+                  "tmin": 271.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k053f7f7bac69434d99d02004239d055c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-05T00:00:00",
+                  "tmin": 272.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k588c2b61dfe14570b883a8d135bf97ad",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-07T00:00:00",
+                  "tmin": 271.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@kc131c9e60a0d4d8b85f5a7b10da962e5",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-08T00:00:00",
+                  "tmin": 270.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@kd0e7fda95f75488c90c56cd0ba0612d8",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-09T00:00:00",
+                  "tmin": 271.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@kaea9c8b102034705bf81c55d51d0e4e1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-10T00:00:00",
+                  "tmin": 272.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k4b4b7a65de5040888b05727889c9c1f0",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-11T00:00:00",
+                  "tmin": 272.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k5bc90fc76cb74e6894cd10e05e077858",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-13T00:00:00",
+                  "tmin": 271.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k1e4ccec281044834aa24dcee6d542625",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-14T00:00:00",
+                  "tmin": 272.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k7a1feea61dcc456db84dbcbf69058512",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-17T00:00:00",
+                  "tmin": 271.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k7af0ccc293f2437bbcd89cbf288ee351",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-22T00:00:00",
+                  "tmin": 271.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@kcb6534deb06048b597b9cef00dfff7fc",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-23T00:00:00",
+                  "tmin": 270.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k76fa7b3bef48465faf557b97cbe1a0f4",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-24T00:00:00",
+                  "tmin": 272.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@keac29bc5f0b44e7db033ba6d1ed9975c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-27T00:00:00",
+                  "tmin": 271.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k813ce3f243b44a198ea664f5b689ef4f",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2008-01-31T00:00:00",
+                  "tmin": 271.45
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "31 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2009"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@kf2acb5fbc7d141d29f4a314dd637a634*1+meteo_tmin@k74931b07cd2d445ebbf6d823d81a8481*1+meteo_tmin@k56088a76e2a14461a921ea438bd899bc*1+meteo_tmin@k5f9cdf456b5c47a4a25d041bb9bca9db*1+meteo_tmin@k0a60f782df9c484fa025474355e7b083*1+meteo_tmin@k70684971be1542288e2dd398e0d431e5*1+meteo_tmin@ka212bbf6c940432d8405e3bb61d1ebb4*1+meteo_tmin@k9049ef7a9db64aabadb0e26147de1cfb*1+meteo_tmin@kf5b090955a78403caffa9948801cbc3a*1+meteo_tmin@kc70a023ec13947309ff0377adec1afee*1+meteo_tmin@k7b8b336770a6434092c9644470b4826e*1+meteo_tmin@k2f400f13eaa440e88a3e1a904e154fbd*1+meteo_tmin@kfab082e015fb478093877ddb4c9c60ef*1+meteo_tmin@ka73af14d91bc402ab2c5dee8b6c64e87*1+meteo_tmin@kb76cb8f343c340a68cf99fb987699e44*1+meteo_tmin@k1133fe6e1fe2414390793c896edb0bee*1+meteo_tmin@k30303fc5810949e1a348e6cd436b5b7c*1+meteo_tmin@k1f9d1027c2cd4f67bece7124b639f59b*1+meteo_tmin@k683a06684d5e417ebf50873bd0fce797*1+meteo_tmin@k4d58566664fc4e0788714af39bab54d8*1+meteo_tmin@k5e5ec858b86248cd9f2614545fba1865*1+meteo_tmin@k32f271d764fa43fba3e9a04f34210a51*1+meteo_tmin@k37cf1c02172f43f69d579e7f9e21880d*1+meteo_tmin@kad31c134eb904f14a91afb4f51da4e32*1+meteo_tmin@k76807ed999ad4052b2a7a9278bcf67cb*1+meteo_tmin@k33009e3347734b49aa63879ab37ffe95*1+meteo_tmin@k2ba4dad4129a486d8530dacf15cdb6af*1+meteo_tmin@k28fea4d12016474d96cc4aa4e386d43d*1+meteo_tmin@kb1a979a0a67a48099987c5ec5e533472*1+meteo_tmin@k6e643141a7c6463a8fd3d6a630a6be4f*1+meteo_tmin@k6655b864371246e09b883481bf7900c3*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf2acb5fbc7d141d29f4a314dd637a634",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-01T00:00:00",
+                  "tmin": 269.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k74931b07cd2d445ebbf6d823d81a8481",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-02T00:00:00",
+                  "tmin": 269.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k56088a76e2a14461a921ea438bd899bc",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-03T00:00:00",
+                  "tmin": 267.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k5f9cdf456b5c47a4a25d041bb9bca9db",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-04T00:00:00",
+                  "tmin": 269.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k0a60f782df9c484fa025474355e7b083",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-05T00:00:00",
+                  "tmin": 266.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k70684971be1542288e2dd398e0d431e5",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-06T00:00:00",
+                  "tmin": 266.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka212bbf6c940432d8405e3bb61d1ebb4",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-07T00:00:00",
+                  "tmin": 264.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9049ef7a9db64aabadb0e26147de1cfb",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-08T00:00:00",
+                  "tmin": 266.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf5b090955a78403caffa9948801cbc3a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-09T00:00:00",
+                  "tmin": 267.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@kc70a023ec13947309ff0377adec1afee",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-10T00:00:00",
+                  "tmin": 266.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k7b8b336770a6434092c9644470b4826e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-11T00:00:00",
+                  "tmin": 266.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k2f400f13eaa440e88a3e1a904e154fbd",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-12T00:00:00",
+                  "tmin": 265.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@kfab082e015fb478093877ddb4c9c60ef",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-13T00:00:00",
+                  "tmin": 266.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka73af14d91bc402ab2c5dee8b6c64e87",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-14T00:00:00",
+                  "tmin": 266.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@kb76cb8f343c340a68cf99fb987699e44",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-15T00:00:00",
+                  "tmin": 271.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k1133fe6e1fe2414390793c896edb0bee",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-16T00:00:00",
+                  "tmin": 269.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k30303fc5810949e1a348e6cd436b5b7c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-17T00:00:00",
+                  "tmin": 270.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k1f9d1027c2cd4f67bece7124b639f59b",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-18T00:00:00",
+                  "tmin": 271.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k683a06684d5e417ebf50873bd0fce797",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-19T00:00:00",
+                  "tmin": 272.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k4d58566664fc4e0788714af39bab54d8",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-20T00:00:00",
+                  "tmin": 272.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k5e5ec858b86248cd9f2614545fba1865",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-21T00:00:00",
+                  "tmin": 271.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k32f271d764fa43fba3e9a04f34210a51",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-22T00:00:00",
+                  "tmin": 269.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k37cf1c02172f43f69d579e7f9e21880d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-23T00:00:00",
+                  "tmin": 272.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@kad31c134eb904f14a91afb4f51da4e32",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-24T00:00:00",
+                  "tmin": 271.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k76807ed999ad4052b2a7a9278bcf67cb",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-25T00:00:00",
+                  "tmin": 272.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k33009e3347734b49aa63879ab37ffe95",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-26T00:00:00",
+                  "tmin": 272.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k2ba4dad4129a486d8530dacf15cdb6af",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-27T00:00:00",
+                  "tmin": 270.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k28fea4d12016474d96cc4aa4e386d43d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-28T00:00:00",
+                  "tmin": 269.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@kb1a979a0a67a48099987c5ec5e533472",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-29T00:00:00",
+                  "tmin": 270.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k6e643141a7c6463a8fd3d6a630a6be4f",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-30T00:00:00",
+                  "tmin": 269.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k6655b864371246e09b883481bf7900c3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2009-01-31T00:00:00",
+                  "tmin": 269.45
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "31 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2010"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@kada0e9c1964e4b7ba6889cf0504a97b1*1+meteo_tmin@k1c195849c370479eacaa68d2734d9df1*1+meteo_tmin@k77346b3072e14b42aa24d2b5b03e2f11*1+meteo_tmin@k5e0dbc0834604d29bc7e1cae4d5c47c4*1+meteo_tmin@k9e2d5997531041eaba09eaeff56f9e27*1+meteo_tmin@ka374b2fb85914091a434153d66bdfcc3*1+meteo_tmin@ke5ed8fbd23404d46ab253e240bd5e092*1+meteo_tmin@kd0762f280a244758aa948c24977b4328*1+meteo_tmin@k095d97ebd8dd49cbb7cdd78c66afd47e*1+meteo_tmin@k36f9f7e156ef48d795a4b8464e62b909*1+meteo_tmin@kf90caebc82184244974be0fb1acc99c3*1+meteo_tmin@kb4b10ecd1fc24a90988a6b635dde1354*1+meteo_tmin@k6341af78c13f4ab293e83e95e241e1df*1+meteo_tmin@ke224a7408a624e9ab1908372d878b9de*1+meteo_tmin@ke636a5bcb4ed462b98449a75d6ced4fe*1+meteo_tmin@k6f70f2adc3c74eff9a002f47bec1159c*1+meteo_tmin@ka388e956424e46c298208e6b4fe9e00c*1+meteo_tmin@kf59f6ced9963483c9e8a127c385d971e*1+meteo_tmin@k95229a7ddb174cb1a1b7d092927f7bf3*1+meteo_tmin@k4a23c7dc50a043488d39f0cf215ccfb2*1+meteo_tmin@k22acaa493c5c4000aaa705befa08c5d5*1+meteo_tmin@k28db87d63e364efdb39ab3abcd0d0fd2*1+meteo_tmin@k61248956d2b5469bb11c44a04c4ccbe6*1+meteo_tmin@k32adf1fa3d224f9488c6f20d0e68eeb5*1+meteo_tmin@k3cb510e9814441beb7b021c4090aacb2*1+meteo_tmin@k84b23fe5e50744a39c0d699b4e45f580*1+meteo_tmin@ka641d887aa4e4fb0a719e3484040d319*1+meteo_tmin@k50232b06e62140048cd76dc639afee02*1+meteo_tmin@k4d659d7bead9497293f1377f7ab92a77*1+meteo_tmin@ke8dcfbacd7f445c4aa8a20ae471a557d*1+meteo_tmin@ke2fec4cbb2d84f2bb460fc9a42dd0ee9*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@kada0e9c1964e4b7ba6889cf0504a97b1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-01T00:00:00",
+                  "tmin": 272.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k1c195849c370479eacaa68d2734d9df1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-02T00:00:00",
+                  "tmin": 268.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k77346b3072e14b42aa24d2b5b03e2f11",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-03T00:00:00",
+                  "tmin": 269.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k5e0dbc0834604d29bc7e1cae4d5c47c4",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-04T00:00:00",
+                  "tmin": 267.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9e2d5997531041eaba09eaeff56f9e27",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-05T00:00:00",
+                  "tmin": 266.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka374b2fb85914091a434153d66bdfcc3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-06T00:00:00",
+                  "tmin": 269.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke5ed8fbd23404d46ab253e240bd5e092",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-07T00:00:00",
+                  "tmin": 269.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@kd0762f280a244758aa948c24977b4328",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-08T00:00:00",
+                  "tmin": 268.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k095d97ebd8dd49cbb7cdd78c66afd47e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-09T00:00:00",
+                  "tmin": 268.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k36f9f7e156ef48d795a4b8464e62b909",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-10T00:00:00",
+                  "tmin": 266.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf90caebc82184244974be0fb1acc99c3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-11T00:00:00",
+                  "tmin": 268.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@kb4b10ecd1fc24a90988a6b635dde1354",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-12T00:00:00",
+                  "tmin": 268.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k6341af78c13f4ab293e83e95e241e1df",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-13T00:00:00",
+                  "tmin": 269.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke224a7408a624e9ab1908372d878b9de",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-14T00:00:00",
+                  "tmin": 270.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke636a5bcb4ed462b98449a75d6ced4fe",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-15T00:00:00",
+                  "tmin": 268.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k6f70f2adc3c74eff9a002f47bec1159c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-16T00:00:00",
+                  "tmin": 269.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka388e956424e46c298208e6b4fe9e00c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-17T00:00:00",
+                  "tmin": 272.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf59f6ced9963483c9e8a127c385d971e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-18T00:00:00",
+                  "tmin": 272.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k95229a7ddb174cb1a1b7d092927f7bf3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-19T00:00:00",
+                  "tmin": 270.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k4a23c7dc50a043488d39f0cf215ccfb2",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-20T00:00:00",
+                  "tmin": 269.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k22acaa493c5c4000aaa705befa08c5d5",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-21T00:00:00",
+                  "tmin": 272.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k28db87d63e364efdb39ab3abcd0d0fd2",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-22T00:00:00",
+                  "tmin": 271.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k61248956d2b5469bb11c44a04c4ccbe6",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-23T00:00:00",
+                  "tmin": 270.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k32adf1fa3d224f9488c6f20d0e68eeb5",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-24T00:00:00",
+                  "tmin": 272.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k3cb510e9814441beb7b021c4090aacb2",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-25T00:00:00",
+                  "tmin": 272.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k84b23fe5e50744a39c0d699b4e45f580",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-26T00:00:00",
+                  "tmin": 267.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka641d887aa4e4fb0a719e3484040d319",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-27T00:00:00",
+                  "tmin": 266.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k50232b06e62140048cd76dc639afee02",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-28T00:00:00",
+                  "tmin": 268.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k4d659d7bead9497293f1377f7ab92a77",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-29T00:00:00",
+                  "tmin": 268.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke8dcfbacd7f445c4aa8a20ae471a557d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-30T00:00:00",
+                  "tmin": 264.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke2fec4cbb2d84f2bb460fc9a42dd0ee9",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2010-01-31T00:00:00",
+                  "tmin": 264.25
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "19 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2011"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@kf3215ff367b34b2abcb5a580b401214a*1+meteo_tmin@kf69b1bee4270435ba3c8bb44baed4972*1+meteo_tmin@k93069b33360b4f578dc51d1093b01e92*1+meteo_tmin@k89bf23d56f57487387f1bda322455911*1+meteo_tmin@k7ffaa16710004f2389425ee3f5c0a200*1+meteo_tmin@k9e2770029a0f41a8b7c4e45936296076*1+meteo_tmin@kb910dbb5755d4c2baaeb3bad0909c512*1+meteo_tmin@k59660ad6fefc4c678979ac4da589e880*1+meteo_tmin@k93263ed9cc8b4d21ba36db41a3329d64*1+meteo_tmin@k79689d3673d44ff7956ebd9caec5f004*1+meteo_tmin@k71927176781647a1a93d983b382f4108*1+meteo_tmin@k540832ce723849f287b0505a43844f56*1+meteo_tmin@k2fdaccface6f49c193297f5ffdaf2de8*1+meteo_tmin@k9b924c2e1494430cbe5af7819e0d4fb3*1+meteo_tmin@kc4fdeaf704144e9b907fe3e68bb27001*1+meteo_tmin@k28e9ad2ff58b40979c39bff133f8d589*1+meteo_tmin@k32263d8897de42fbb7d38383de33e858*1+meteo_tmin@kaf7418715b0a45e9b4e205e1def0fca7*1+meteo_tmin@k04b34a8155d04235a8cb349d04d7fe7d*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@kf3215ff367b34b2abcb5a580b401214a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-01T00:00:00",
+                  "tmin": 271.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf69b1bee4270435ba3c8bb44baed4972",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-02T00:00:00",
+                  "tmin": 268.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k93069b33360b4f578dc51d1093b01e92",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-03T00:00:00",
+                  "tmin": 266.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k89bf23d56f57487387f1bda322455911",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-04T00:00:00",
+                  "tmin": 268.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k7ffaa16710004f2389425ee3f5c0a200",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-05T00:00:00",
+                  "tmin": 271.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9e2770029a0f41a8b7c4e45936296076",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-06T00:00:00",
+                  "tmin": 272.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@kb910dbb5755d4c2baaeb3bad0909c512",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-19T00:00:00",
+                  "tmin": 269.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k59660ad6fefc4c678979ac4da589e880",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-20T00:00:00",
+                  "tmin": 268.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k93263ed9cc8b4d21ba36db41a3329d64",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-21T00:00:00",
+                  "tmin": 268.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k79689d3673d44ff7956ebd9caec5f004",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-22T00:00:00",
+                  "tmin": 266.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k71927176781647a1a93d983b382f4108",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-23T00:00:00",
+                  "tmin": 264.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k540832ce723849f287b0505a43844f56",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-24T00:00:00",
+                  "tmin": 268.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k2fdaccface6f49c193297f5ffdaf2de8",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-25T00:00:00",
+                  "tmin": 270.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9b924c2e1494430cbe5af7819e0d4fb3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-26T00:00:00",
+                  "tmin": 272.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@kc4fdeaf704144e9b907fe3e68bb27001",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-27T00:00:00",
+                  "tmin": 270.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k28e9ad2ff58b40979c39bff133f8d589",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-28T00:00:00",
+                  "tmin": 269.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k32263d8897de42fbb7d38383de33e858",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-29T00:00:00",
+                  "tmin": 269.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@kaf7418715b0a45e9b4e205e1def0fca7",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-30T00:00:00",
+                  "tmin": 268.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k04b34a8155d04235a8cb349d04d7fe7d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2011-01-31T00:00:00",
+                  "tmin": 268.55
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "16 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2012"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k6990f3293a844ca8a8b4fc3e3ee3fe4d*1+meteo_tmin@kbfcd5219056a4592a3c4070073660d33*1+meteo_tmin@k2ce707c263944f928723028f98a4224d*1+meteo_tmin@k805456ee748643fba9aeb6fb829a8035*1+meteo_tmin@k979c0f5f7d1d4432ae69898f529b7b44*1+meteo_tmin@k807fedfb4bab428aa6a727a694af4e33*1+meteo_tmin@k570c9e1384bd442b87e8593a22f0b81d*1+meteo_tmin@kd404d7d2e32548758c4fc2386aff7726*1+meteo_tmin@k9fb641070f404ac5814f69466c94a98e*1+meteo_tmin@kf08bcf49fccd47c4ba88dda85d8fe40a*1+meteo_tmin@kbcda4fc7e495477081567c4daf70fcef*1+meteo_tmin@kcac66e6082064fd98c09d3305ad0669a*1+meteo_tmin@k66d299a271dd4ddab1d773f1db4127b5*1+meteo_tmin@k6be83679ae1541a1b7c52085e210cd28*1+meteo_tmin@k18a70584e192478fbed1c378a4c05e91*1+meteo_tmin@k0b7f1c6630bb47598beda71e5fb1d236*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@k6990f3293a844ca8a8b4fc3e3ee3fe4d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-09T00:00:00",
+                  "tmin": 272.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@kbfcd5219056a4592a3c4070073660d33",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-11T00:00:00",
+                  "tmin": 272.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k2ce707c263944f928723028f98a4224d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-12T00:00:00",
+                  "tmin": 272.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k805456ee748643fba9aeb6fb829a8035",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-13T00:00:00",
+                  "tmin": 273.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k979c0f5f7d1d4432ae69898f529b7b44",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-14T00:00:00",
+                  "tmin": 269.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k807fedfb4bab428aa6a727a694af4e33",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-15T00:00:00",
+                  "tmin": 269.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k570c9e1384bd442b87e8593a22f0b81d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-16T00:00:00",
+                  "tmin": 268.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@kd404d7d2e32548758c4fc2386aff7726",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-17T00:00:00",
+                  "tmin": 269.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9fb641070f404ac5814f69466c94a98e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-18T00:00:00",
+                  "tmin": 270.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf08bcf49fccd47c4ba88dda85d8fe40a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-19T00:00:00",
+                  "tmin": 271.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@kbcda4fc7e495477081567c4daf70fcef",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-25T00:00:00",
+                  "tmin": 270.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@kcac66e6082064fd98c09d3305ad0669a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-26T00:00:00",
+                  "tmin": 272.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k66d299a271dd4ddab1d773f1db4127b5",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-28T00:00:00",
+                  "tmin": 273.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k6be83679ae1541a1b7c52085e210cd28",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-29T00:00:00",
+                  "tmin": 271.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k18a70584e192478fbed1c378a4c05e91",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-30T00:00:00",
+                  "tmin": 271.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k0b7f1c6630bb47598beda71e5fb1d236",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2012-01-31T00:00:00",
+                  "tmin": 268.15
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "24 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2013"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@k8e6bd3221af94f48ab3c523f3594e1ae*1+meteo_tmin@kc7f27312029841f7b314602c96c7a608*1+meteo_tmin@k7e0790322fe64c5d977fd8776ddd539e*1+meteo_tmin@k5721406b5e3c4311b3a7fa55a9605c0d*1+meteo_tmin@ke8b7d52b8ce541269b7edddbfd6bb9a3*1+meteo_tmin@k3dd91efeac554b1096531577ae98fed0*1+meteo_tmin@k31e2a870ea3b46cd9827723e06966b7a*1+meteo_tmin@k32a461d6211645daaccd4df8938b12ab*1+meteo_tmin@k1c0dc84bc1b84ae3bab513dd4e1729cf*1+meteo_tmin@kfeb39c04cc324d8e8c7c5a5327e41074*1+meteo_tmin@k6fd86b484197413db3a4ba2790203326*1+meteo_tmin@k15c1822ff14f4759bfebc46668b20cc8*1+meteo_tmin@ka3daff8edbca47288ff6d8785d1d20a9*1+meteo_tmin@kf4ad4b06d99a43ddb18d4f7c29522b44*1+meteo_tmin@k12c2da9384704a1eb09891e4dcfa1796*1+meteo_tmin@kf34e8c954dc24e5fa3d47d9ca5743bdc*1+meteo_tmin@k3f353b71fab6460b8aa27b0ff31cc5ed*1+meteo_tmin@k18d2c975d49047f29ed19d41d3eb0b7c*1+meteo_tmin@ka208286dabfc4127a441579936a23da7*1+meteo_tmin@kb30528f9d7a74345998190ee73ffef34*1+meteo_tmin@k9d0ff2669b4a4de5b29d21bf842e28c1*1+meteo_tmin@k42bef69d0a4c42c49fea0365073ac00e*1+meteo_tmin@ka4b0a3ece0974e7988f69fd469a88128*1+meteo_tmin@k18afa07e20e34bd5a35081ff015ed529*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@k8e6bd3221af94f48ab3c523f3594e1ae",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-01T00:00:00",
+                  "tmin": 271.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@kc7f27312029841f7b314602c96c7a608",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-02T00:00:00",
+                  "tmin": 272.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k7e0790322fe64c5d977fd8776ddd539e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-03T00:00:00",
+                  "tmin": 270.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k5721406b5e3c4311b3a7fa55a9605c0d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-09T00:00:00",
+                  "tmin": 272.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke8b7d52b8ce541269b7edddbfd6bb9a3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-11T00:00:00",
+                  "tmin": 272.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k3dd91efeac554b1096531577ae98fed0",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-12T00:00:00",
+                  "tmin": 271.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k31e2a870ea3b46cd9827723e06966b7a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-13T00:00:00",
+                  "tmin": 271.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k32a461d6211645daaccd4df8938b12ab",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-14T00:00:00",
+                  "tmin": 271.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@k1c0dc84bc1b84ae3bab513dd4e1729cf",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-15T00:00:00",
+                  "tmin": 270.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@kfeb39c04cc324d8e8c7c5a5327e41074",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-16T00:00:00",
+                  "tmin": 267.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k6fd86b484197413db3a4ba2790203326",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-17T00:00:00",
+                  "tmin": 267.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k15c1822ff14f4759bfebc46668b20cc8",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-18T00:00:00",
+                  "tmin": 265.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka3daff8edbca47288ff6d8785d1d20a9",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-19T00:00:00",
+                  "tmin": 266.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf4ad4b06d99a43ddb18d4f7c29522b44",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-20T00:00:00",
+                  "tmin": 271.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k12c2da9384704a1eb09891e4dcfa1796",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-21T00:00:00",
+                  "tmin": 270.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf34e8c954dc24e5fa3d47d9ca5743bdc",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-22T00:00:00",
+                  "tmin": 269.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k3f353b71fab6460b8aa27b0ff31cc5ed",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-23T00:00:00",
+                  "tmin": 268.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k18d2c975d49047f29ed19d41d3eb0b7c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-24T00:00:00",
+                  "tmin": 268.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka208286dabfc4127a441579936a23da7",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-25T00:00:00",
+                  "tmin": 265.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@kb30528f9d7a74345998190ee73ffef34",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-26T00:00:00",
+                  "tmin": 265.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9d0ff2669b4a4de5b29d21bf842e28c1",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-27T00:00:00",
+                  "tmin": 271.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k42bef69d0a4c42c49fea0365073ac00e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-28T00:00:00",
+                  "tmin": 272.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka4b0a3ece0974e7988f69fd469a88128",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-29T00:00:00",
+                  "tmin": 271.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k18afa07e20e34bd5a35081ff015ed529",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2013-01-31T00:00:00",
+                  "tmin": 273.05
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "16 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2014"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@kef25765a49704bfabc1bbcba36a0415e*1+meteo_tmin@k5777a269bdc5460599d1279ef08d9f05*1+meteo_tmin@k418f19c9a10247e69e1641b21dc68308*1+meteo_tmin@ka30f39c397be44d1a53ca3a2aea8e21d*1+meteo_tmin@kea66343de006473eb96840690a676792*1+meteo_tmin@k2166a77cdb234c57924afab8a566464f*1+meteo_tmin@ke1cd8d5ef5c14c558c50604fa8d6b9f9*1+meteo_tmin@ke593be98b4b548fc8d460b07984d8305*1+meteo_tmin@k7b6d356d278043539756761ed383e172*1+meteo_tmin@ka910eebadfb849d68d37e22e88324c0f*1+meteo_tmin@kd50f1a5f146747ff95b4c4740361eef3*1+meteo_tmin@k4fd4053aa4c648f180dc23beb89f503e*1+meteo_tmin@kba1bce1ef3f24809a37aa886bf8f63ab*1+meteo_tmin@k339e256554c644e88687226b4b95e844*1+meteo_tmin@k7014eeb27fe440eca3eed1b9fd8b759c*1+meteo_tmin@ke8865fefdf3e4a3e9f13e56dd11ad307*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@kef25765a49704bfabc1bbcba36a0415e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-01T00:00:00",
+                  "tmin": 272.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k5777a269bdc5460599d1279ef08d9f05",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-03T00:00:00",
+                  "tmin": 272.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k418f19c9a10247e69e1641b21dc68308",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-05T00:00:00",
+                  "tmin": 272.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka30f39c397be44d1a53ca3a2aea8e21d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-09T00:00:00",
+                  "tmin": 272.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@kea66343de006473eb96840690a676792",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-14T00:00:00",
+                  "tmin": 272.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k2166a77cdb234c57924afab8a566464f",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-15T00:00:00",
+                  "tmin": 272.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke1cd8d5ef5c14c558c50604fa8d6b9f9",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-18T00:00:00",
+                  "tmin": 272.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke593be98b4b548fc8d460b07984d8305",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-22T00:00:00",
+                  "tmin": 272.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k7b6d356d278043539756761ed383e172",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-23T00:00:00",
+                  "tmin": 272.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka910eebadfb849d68d37e22e88324c0f",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-24T00:00:00",
+                  "tmin": 272.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@kd50f1a5f146747ff95b4c4740361eef3",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-25T00:00:00",
+                  "tmin": 270.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k4fd4053aa4c648f180dc23beb89f503e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-27T00:00:00",
+                  "tmin": 271.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@kba1bce1ef3f24809a37aa886bf8f63ab",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-28T00:00:00",
+                  "tmin": 271.15
+                }
+              },
+              {
+                "reference": "meteo_tmin@k339e256554c644e88687226b4b95e844",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-29T00:00:00",
+                  "tmin": 268.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k7014eeb27fe440eca3eed1b9fd8b759c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-30T00:00:00",
+                  "tmin": 270.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@ke8865fefdf3e4a3e9f13e56dd11ad307",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2014-01-31T00:00:00",
+                  "tmin": 271.15
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      },
+      {
+        "answer": {
+          "time_window_2": "23 (*)",
+          "latitude": 47.4,
+          "longitude": 8.5,
+          "time_window_3": "2015"
+        },
+        "provenance": {
+          "formula": {
+            "expression": "meteo_tmin@kc66dae06887e4dfc87cb84fc7a1e2248*1+meteo_tmin@k9be4ea0707ae4fc6b456854aa4ef3beb*1+meteo_tmin@k776eead4f3bb40b88f22de1286c876f5*1+meteo_tmin@k8e6cc8442dcf4341be42fbd55fe00b6d*1+meteo_tmin@kf08202c930e04bf99bb7aa1e65f94d6e*1+meteo_tmin@k1986b7d518c14ba28e9c8ae054fe419a*1+meteo_tmin@k616d0ad7ff84413eb11b1f0047e4b376*1+meteo_tmin@k8a1bda5ce6c54b87b8b8dc2b765bd11c*1+meteo_tmin@k840e315cf1314daf9276b6958af65b7d*1+meteo_tmin@kce175d129ede4c17a45ac3e352d57036*1+meteo_tmin@k9d45a8e8ee3646a6a9ec161466973acd*1+meteo_tmin@k90da36a991f342739df6229545268899*1+meteo_tmin@kfa614215e45b401dbc711b0c483a6323*1+meteo_tmin@k50f566d14907463793ac1a4bea666178*1+meteo_tmin@ka1ad45cb85114d0482d54dc75fa03049*1+meteo_tmin@k9629e888129647a7bc506040b8e8ed84*1+meteo_tmin@k0fb5a12050a740dfa37bc904a836a888*1+meteo_tmin@k442acbb030ae465a9f4ff4e803809529*1+meteo_tmin@k4a8d5af7b8c54549b1aab15c733ae72f*1+meteo_tmin@ka4274ccd48be49029e5f4f8869de7293*1+meteo_tmin@kd6e2f521a1e74b8390a96c3c6a716fed*1+meteo_tmin@k9f4e9abb4d5242ea8020f76854c74ea9*1+meteo_tmin@k20f87e0f3c6248e2b9a41a86ced19b08*1",
+            "data": [
+              {
+                "reference": "meteo_tmin@kc66dae06887e4dfc87cb84fc7a1e2248",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-01T00:00:00",
+                  "tmin": 266.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9be4ea0707ae4fc6b456854aa4ef3beb",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-02T00:00:00",
+                  "tmin": 268.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k776eead4f3bb40b88f22de1286c876f5",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-05T00:00:00",
+                  "tmin": 272.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k8e6cc8442dcf4341be42fbd55fe00b6d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-06T00:00:00",
+                  "tmin": 272.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@kf08202c930e04bf99bb7aa1e65f94d6e",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-07T00:00:00",
+                  "tmin": 272.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k1986b7d518c14ba28e9c8ae054fe419a",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-08T00:00:00",
+                  "tmin": 272.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k616d0ad7ff84413eb11b1f0047e4b376",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-12T00:00:00",
+                  "tmin": 271.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@k8a1bda5ce6c54b87b8b8dc2b765bd11c",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-13T00:00:00",
+                  "tmin": 271.55
+                }
+              },
+              {
+                "reference": "meteo_tmin@k840e315cf1314daf9276b6958af65b7d",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-14T00:00:00",
+                  "tmin": 272.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@kce175d129ede4c17a45ac3e352d57036",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-15T00:00:00",
+                  "tmin": 272.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9d45a8e8ee3646a6a9ec161466973acd",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-18T00:00:00",
+                  "tmin": 270.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k90da36a991f342739df6229545268899",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-19T00:00:00",
+                  "tmin": 271.95
+                }
+              },
+              {
+                "reference": "meteo_tmin@kfa614215e45b401dbc711b0c483a6323",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-20T00:00:00",
+                  "tmin": 271.45
+                }
+              },
+              {
+                "reference": "meteo_tmin@k50f566d14907463793ac1a4bea666178",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-21T00:00:00",
+                  "tmin": 271.25
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka1ad45cb85114d0482d54dc75fa03049",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-22T00:00:00",
+                  "tmin": 272.05
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9629e888129647a7bc506040b8e8ed84",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-23T00:00:00",
+                  "tmin": 271.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@k0fb5a12050a740dfa37bc904a836a888",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-24T00:00:00",
+                  "tmin": 270.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k442acbb030ae465a9f4ff4e803809529",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-25T00:00:00",
+                  "tmin": 271.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@k4a8d5af7b8c54549b1aab15c733ae72f",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-26T00:00:00",
+                  "tmin": 271.85
+                }
+              },
+              {
+                "reference": "meteo_tmin@ka4274ccd48be49029e5f4f8869de7293",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-27T00:00:00",
+                  "tmin": 270.75
+                }
+              },
+              {
+                "reference": "meteo_tmin@kd6e2f521a1e74b8390a96c3c6a716fed",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-28T00:00:00",
+                  "tmin": 270.35
+                }
+              },
+              {
+                "reference": "meteo_tmin@k9f4e9abb4d5242ea8020f76854c74ea9",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-30T00:00:00",
+                  "tmin": 271.65
+                }
+              },
+              {
+                "reference": "meteo_tmin@k20f87e0f3c6248e2b9a41a86ced19b08",
+                "data": {
+                  "latitude": 47.4,
+                  "longitude": 8.5,
+                  "time": "2015-01-31T00:00:00",
+                  "tmin": 270.25
+                }
+              }
+            ]
+          }
+        },
+        "probability": null
+      }
+    ],
+    "explanation": "\n\n### Query intent\n\nThe query asks for a count of minimum-temperature observations at a specific measurement location, grouped by location coordinates and observation year. In domain terms, it asks:\n\n> For the location whose latitude and longitude round to one decimal place as latitude 47.4 and longitude 8.5, how many January observations in each calendar year from 2005 through 2015 recorded a minimum temperature below freezing?\n\nThe minimum-temperature value is stored on an absolute temperature scale, so checking whether it is below 273.15 corresponds to checking whether the minimum temperature was below 0°C.\n\nThe returned count is shown as `time_window_2`, the location coordinates are shown as `latitude` and `longitude`, and the observation year is shown as `time_window_3`.\n\n---\n\n### Result explanation\n\nThe result means that at the location with latitude 47.4 and longitude 8.5, the number of January days with a sub-freezing minimum temperature in each year was:\n\n| Year | Count of January days below freezing |\n|---:|---:|\n| 2005 | 22 |\n| 2006 | 29 |\n| 2007 | 9 |\n| 2008 | 18 |\n| 2009 | 31 |\n| 2010 | 31 |\n| 2011 | 19 |\n| 2012 | 16 |\n| 2013 | 24 |\n| 2014 | 16 |\n| 2015 | 23 |\n\nFor example, the result row containing year 2009 and count 31 means that every day in January 2009 had a recorded minimum temperature below freezing at latitude 47.4, longitude 8.5. The row for 2007 and count 9 means that only nine January days in 2007 had minimum temperatures below freezing at that same location.\n\n---\n\n### Provenance explanation\n\nThe provenance tells us that we obtained this result because specific daily minimum-temperature records satisfied all of the query conditions.\n\nEach contributing record represents one observation with:\n\n- measurement location latitude 47.4 and longitude 8.5;\n- observation date in January;\n- observation year between 2005 and 2015;\n- minimum temperature below 273.15 Kelvin, which is below 0°C.\n\nThe provenance for each result row adds one contribution from each matching observation record. The total count is the number of such observations in that year.\n\n---\n\n#### 2005 result: count 22\n\nThe provenance shows 22 contributing observations at latitude 47.4, longitude 8.5 in January 2005:\n\n- January 3, 4, 5;\n- January 7, 8;\n- January 14 through 20;\n- January 22 through 31.\n\nEach of these records has a minimum temperature below 273.15 Kelvin, so each represents one January day with freezing or sub-freezing minimum temperature at this location. Adding their contributions gives 22 days.\n\n---\n\n#### 2006 result: count 29\n\nThe provenance shows 29 contributing observations at latitude 47.4, longitude 8.5 in January 2006:\n\n- January 1 through 17;\n- January 20 through 31.\n\nEach record has a minimum temperature below 273.15 Kelvin. Since there are 29 such January days, the count is 29.\n\n---\n\n#### 2007 result: count 9\n\nThe provenance shows 9 contributing observations at latitude 47.4, longitude 8.5 in January 2007:\n\n- January 23 through 31.\n\nAll nine records show minimum temperatures below freezing. These nine independent observations support the count of 9 for 2007.\n\n---\n\n#### 2008 result: count 18\n\nThe provenance shows 18 contributing observations at latitude 47.4, longitude 8.5 in January 2008:\n\n- January 1 through 5;\n- January 7 through 11;\n- January 13, 14, 17;\n- January 22 through 24;\n- January 27;\n- January 31.\n\nEach of these observations records a minimum temperature below freezing. The number of matching days is 18, giving the result count 18.\n\n---\n\n#### 2009 result: count 31\n\nThe provenance shows 31 contributing observations at latitude 47.4, longitude 8.5 in January 2009:\n\n- every day from January 1 through January 31.\n\nBecause every day in January 2009 has a minimum temperature below 273.15 Kelvin, all 31 January days contribute to the count, giving 31.\n\n---\n\n#### 2010 result: count 31\n\nThe provenance shows 31 contributing observations at latitude 47.4, longitude 8.5 in January 2010:\n\n- every day from January 1 through January 31.\n\nEach of these records has a minimum temperature below freezing, so the location experienced sub-freezing minimum temperatures on all 31 January days in 2010.\n\n---\n\n#### 2011 result: count 19\n\nThe provenance shows 19 contributing observations at latitude 47.4, longitude 8.5 in January 2011:\n\n- January 1 through 6;\n- January 19 through 31.\n\nThese are the January days in 2011 for which the provenance records minimum temperatures below freezing. The total number of contributing days is 19.\n\n---\n\n#### 2012 result: count 16\n\nThe provenance shows 16 contributing observations at latitude 47.4, longitude 8.5 in January 2012:\n\n- January 9;\n- January 11 through 19;\n- January 25, 26;\n- January 28 through 31.\n\nEach observation represents a January day where the recorded minimum temperature was below freezing. There are 16 such days, so the count is 16.\n\n---\n\n#### 2013 result: count 24\n\nThe provenance shows 24 contributing observations at latitude 47.4, longitude 8.5 in January 2013:\n\n- January 1 through 3;\n- January 9;\n- January 11 through 29;\n- January 31.\n\nEach of these records has a minimum temperature below 273.15 Kelvin. Therefore, 24 January days in 2013 qualify for the count.\n\n---\n\n#### 2014 result: count 16\n\nThe provenance shows 16 contributing observations at latitude 47.4, longitude 8.5 in January 2014:\n\n- January 1, 3, 5;\n- January 9;\n- January 14, 15;\n- January 18;\n- January 22 through 25;\n- January 27 through 31.\n\nEach contributing observation is a sub-freezing minimum-temperature record for that location and year, producing the count 16.\n\n---\n\n#### 2015 result: count 23\n\nThe provenance shows 23 contributing observations at latitude 47.4, longitude 8.5 in January 2015:\n\n- January 1, 2;\n- January 5 through 8;\n- January 12 through 15;\n- January 18 through 28;\n- January 30, 31.\n\nAll of these records have minimum temperatures below freezing, so 23 January days contribute to the result for 2015.\n\n---\n\nIn summary, each result row is justified by a set of daily minimum-temperature observations. For a given year, the provenance lists every observation that satisfied the location, month, year, and below-freezing temperature conditions. Because each such observation represents one qualifying day, their combined contributions produce the reported count."
+  },
+  "error": null
+}

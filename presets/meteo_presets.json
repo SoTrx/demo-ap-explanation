@@ -1,0 +1,51 @@
+[
+  {
+    "id": "G81",
+    "category": "Top-k readings",
+    "question": "List the top 10 lowest temperature readings (in celsius) in City of Zurich in July 2015 with their coordinates.",
+    "description": "ORDER BY … LIMIT picks ten readings. The answer shows ten temperatures; the provenance says which day each one comes from.",
+    "takeaway": "The SQL answer lists ten temperatures without a date. The provenance dates each one: the coldest night was **31 July 2015** (10.3 °C), and seven of the ten fall between 25 and 31 July.",
+    "live": true
+  },
+  {
+    "id": "F50",
+    "category": "Count over a threshold",
+    "question": "Show the number of highest temperature readings in Celsius above 30 degrees in the City of Zurich in 2015.",
+    "description": "A threshold filter before COUNT. The answer is a bare number; the provenance lists exactly the readings that passed the filter.",
+    "takeaway": "The SQL answer is a bare count, 13. The provenance lists the **13 days** above 30 °C: a first spell from 2 to 7 July, then 16–22 July and 6–13 August 2015, peaking at 33.6 °C on 7 August.",
+    "live": true
+  },
+  {
+    "id": "K247",
+    "category": "Count per group",
+    "question": "What are the counts of Frost Days (FD) in City of Zurich for each January between 2005 and 2015?",
+    "description": "A threshold filter, then COUNT per year. Each yearly count comes with the dated frost days behind it.",
+    "takeaway": "Each yearly count comes with its frost days. January 2009 and 2010 froze every day. January 2007 had only 9 frost days, all in its last week (23–31 January).",
+    "live": true
+  },
+  {
+    "id": "C155",
+    "category": "Top-1 reading with a join",
+    "question": "Show latitude and longitude of the highest wind speed in City of Zurich between 2018 and 2019",
+    "description": "ORDER BY … LIMIT 1 over a join with the elevation table. The provenance dates the maximum, and shows what the join really contributes.",
+    "takeaway": "The SQL answer is a speed at a place: 10.3 m/s. The provenance names the reading behind it: **3 January 2018**, the day storm Burglind crossed Switzerland. It also exposes a flaw in the query. The join attaches one of the cell's 134,280 elevation points (400 m) to the wind reading, although elevation plays no part in the answer.",
+    "live": true
+  },
+  {
+    "id": "T157",
+    "category": "MAX over a week, with a join",
+    "question": "Show highest precipitation record of the highest point in City of Zurich during ISO week 46 of 2011.",
+    "description": "A MAX over one week, joined with the highest elevation point. The provenance lists the daily readings of the week and the elevation point each is paired with.",
+    "takeaway": "The answer's 0 mm is backed by the **7 daily readings** of ISO week 46 (14–20 November 2011), all dry. Each one is paired with the cell's highest elevation point (860.9 m at 47.3515, 8.4902), so the \"highest point\" step can be checked too.",
+    "live": true
+  },
+  {
+    "id": "Q295",
+    "category": "Comparison on an aggregate (KO Scenario)",
+    "question": "When was the last month with measurable precipitation (> 1 mm) in City of Zurich in 2019?",
+    "description": "A filter on a SUM computed in a CTE. ProvSQL evaluates it as a comparison over an aggregate, which exhausts the database's memory on real data. Only the recorded failure is shown.",
+    "takeaway": "The SQL answer is December 2019, with 93.8 mm of rain. The service could not compute its provenance. ProvSQL turns the `total_precipitation > 0.001` filter on the CTE's sum into a comparison over the 31 December readings (20 of them wet). Evaluating that comparison used up 54 GB of memory and ignored cancellation, until the database process was killed. It failed with all semirings, and again with the formula semiring alone. On the synthetic data, where most December days were dry, it took a second.",
+    "live": false,
+    "recorded_cost_note": "Not measured by the demo, but the database backend grew to about 54 GB in 6 minutes before it was killed."
+  }
+]

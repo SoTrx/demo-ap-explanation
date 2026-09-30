@@ -1,0 +1,127 @@
+{
+  "$schema": "https://datagems-dev.scayle.es/moma2/v1/schemas/ap/ap-common.schema.json",
+  "edges": [
+    {
+      "from": "3e98b093-c54d-51b5-83c2-e2d374ba46f0",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "167c5a20-785e-5d40-8d5a-bf12135a5b18"
+    },
+    {
+      "from": "3e98b093-c54d-51b5-83c2-e2d374ba46f0",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "d02a1a32-ec11-5281-b295-37f40a846096"
+    },
+    {
+      "from": "d02a1a32-ec11-5281-b295-37f40a846096",
+      "labels": [
+        "follows"
+      ],
+      "to": "167c5a20-785e-5d40-8d5a-bf12135a5b18"
+    },
+    {
+      "from": "4ccf98db-ecb6-5c5c-9c5f-13c4bbfe4795",
+      "labels": [
+        "input"
+      ],
+      "to": "167c5a20-785e-5d40-8d5a-bf12135a5b18"
+    },
+    {
+      "from": "4ccf98db-ecb6-5c5c-9c5f-13c4bbfe4795",
+      "labels": [
+        "input"
+      ],
+      "to": "d02a1a32-ec11-5281-b295-37f40a846096"
+    },
+    {
+      "from": "4ccf98db-ecb6-5c5c-9c5f-13c4bbfe4795",
+      "labels": [
+        "containedIn"
+      ],
+      "to": "29111050-e0e0-56ce-9536-ce5aee436fce"
+    },
+    {
+      "from": "4ccf98db-ecb6-5c5c-9c5f-13c4bbfe4795",
+      "labels": [
+        "containedIn"
+      ],
+      "to": "c44b349f-96fe-540c-aacb-0c4681c8b63a"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "3e98b093-c54d-51b5-83c2-e2d374ba46f0",
+      "labels": [
+        "Analytical_Pattern"
+      ],
+      "properties": {
+        "name": "Meteo T157 AP",
+        "description": "Show highest precipitation record of the highest point in City of Zurich during ISO week 46 of 2011.",
+        "process": "query",
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00"
+      }
+    },
+    {
+      "id": "167c5a20-785e-5d40-8d5a-bf12135a5b18",
+      "labels": [
+        "Operator",
+        "Provenance_Annotate_Dataset_Operator"
+      ],
+      "properties": {
+        "name": "Annotate Meteo Dataset Operator",
+        "description": "Annotate the meteo tables with provenance information",
+        "dataset": "meteo"
+      }
+    },
+    {
+      "id": "d02a1a32-ec11-5281-b295-37f40a846096",
+      "labels": [
+        "Operator",
+        "Provenance_SQL_Operator"
+      ],
+      "properties": {
+        "name": "T157 SQL Query Operator",
+        "description": "Show highest precipitation record of the highest point in City of Zurich during ISO week 46 of 2011.",
+        "command": "query",
+        "queryType": "SELECT",
+        "type": "SQL Query",
+        "step": 1,
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00",
+        "query": "WITH place_0 AS (\n  SELECT\n    me.latitude AS latitude,\n    me.longitude AS longitude,\n    me.elevation AS elevation\n  FROM meteo_elevation AS me\n  WHERE\n    (ROUND(CAST(me.latitude AS DECIMAL), 1), ROUND(CAST(me.longitude AS DECIMAL), 1)) IN ((47.4, 8.5))\n  ORDER BY\n    elevation DESC\n  LIMIT 1\n), precip_at_highest_point AS (\n  SELECT\n    tp.tp AS tp,\n    tp.time AS time,\n    hp.latitude AS latitude,\n    hp.longitude AS longitude,\n    hp.elevation AS elevation\n  FROM meteo_tp AS tp\n  INNER JOIN place_0 AS hp\n    ON ROUND(CAST(tp.latitude AS DECIMAL), 1) = ROUND(CAST(hp.latitude AS DECIMAL), 1)\n    AND ROUND(CAST(tp.longitude AS DECIMAL), 1) = ROUND(CAST(hp.longitude AS DECIMAL), 1)\n  WHERE\n    EXTRACT(WEEK FROM tp.time) = 46 AND EXTRACT(YEAR FROM tp.time) = 2011\n)\nSELECT\n  precip_at_highest_point.latitude AS latitude,\n  precip_at_highest_point.longitude AS longitude,\n  precip_at_highest_point.elevation AS highest_point_elevation_m,\n  MAX(precip_at_highest_point.tp) AS highest_precipitation_record_m\nFROM precip_at_highest_point\nGROUP BY\n  precip_at_highest_point.latitude,\n  precip_at_highest_point.longitude,\n  precip_at_highest_point.elevation"
+      }
+    },
+    {
+      "id": "4ccf98db-ecb6-5c5c-9c5f-13c4bbfe4795",
+      "labels": [
+        "RelationalDatabase"
+      ],
+      "properties": {
+        "name": "meteo",
+        "description": "Meteorological database (ERA5-Land schema)"
+      }
+    },
+    {
+      "id": "29111050-e0e0-56ce-9536-ce5aee436fce",
+      "labels": [
+        "Table"
+      ],
+      "properties": {
+        "name": "meteo.meteo_elevation"
+      }
+    },
+    {
+      "id": "c44b349f-96fe-540c-aacb-0c4681c8b63a",
+      "labels": [
+        "Table"
+      ],
+      "properties": {
+        "name": "meteo.meteo_tp"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "ap": "Q295.json",
+  "plain": {
+    "columns": [
+      "time_window_2",
+      "time_window_3",
+      "precipitation_m"
+    ],
+    "rows": [
+      [
+        "12",
+        "2019",
+        0.09380000000000001
+      ]
+    ],
+    "seconds": 0.0
+  },
+  "request": "POST /api/v1/aps/explanation/formula?probability=false",
+  "seconds": 343.6,
+  "task_id": "769d3c96-83fc-4424-b6a9-9a05d242507d",
+  "status": "failure",
+  "result": null,
+  "error": "consuming input failed: server closed the connection unexpectedly\n\tThis probably means the server terminated abnormally\n\tbefore or while processing the request."
+}

@@ -1,0 +1,50 @@
+{
+    "name": "Demo - AP Explanation",
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "./docker-compose.dev.yml"
+    ],
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "features": {
+        "ghcr.io/devcontainers-extra/features/uv:1": {},
+        "ghcr.io/devcontainers-extra/features/ruff:2": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "moby": false
+        },
+        "ghcr.io/devcontainers-extra/features/asdf-package:1": {
+            "packages": "ms-graph.kiota"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "humao.rest-client",
+                "ms-python.vscode-pylance",
+                "charliermarsh.ruff",
+                "ms-python.bandit",
+                "ms-python.debugpy",
+                "yzhang.markdown-all-in-one",
+                "mechatroner.rainbow-csv",
+                "graph.kiota"
+            ],
+            "settings": {
+                "editor.defaultFormatter": "charliermarsh.ruff",
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.organizeImports": "explicit"
+                },
+                "python.languageServer": "Pylance",
+                "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+                "files.exclude": {
+                    "**/__pycache__": true,
+                    "**/*.pyc": true,
+                    "**/*.pyo": true,
+                    "**/.pytest_cache": true
+                }
+            }
+        }
+    },
+    "postCreateCommand": "bash .devcontainer/post-create.sh"
+}

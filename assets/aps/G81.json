@@ -1,0 +1,111 @@
+{
+  "$schema": "https://datagems-dev.scayle.es/moma2/v1/schemas/ap/ap-common.schema.json",
+  "edges": [
+    {
+      "from": "0e7cd5e9-16f0-52dc-8a66-1f8ae098e371",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "1acfbf6e-955b-5721-bfc3-dc7ccf44a98c"
+    },
+    {
+      "from": "0e7cd5e9-16f0-52dc-8a66-1f8ae098e371",
+      "labels": [
+        "consist_of"
+      ],
+      "to": "98a06962-43f7-542b-a47e-bdc436e63e34"
+    },
+    {
+      "from": "98a06962-43f7-542b-a47e-bdc436e63e34",
+      "labels": [
+        "follows"
+      ],
+      "to": "1acfbf6e-955b-5721-bfc3-dc7ccf44a98c"
+    },
+    {
+      "from": "1fe9bfee-e34c-5085-9f97-4b6aa18efc03",
+      "labels": [
+        "input"
+      ],
+      "to": "1acfbf6e-955b-5721-bfc3-dc7ccf44a98c"
+    },
+    {
+      "from": "1fe9bfee-e34c-5085-9f97-4b6aa18efc03",
+      "labels": [
+        "input"
+      ],
+      "to": "98a06962-43f7-542b-a47e-bdc436e63e34"
+    },
+    {
+      "from": "1fe9bfee-e34c-5085-9f97-4b6aa18efc03",
+      "labels": [
+        "containedIn"
+      ],
+      "to": "ea8a0b97-4d4a-530e-89fa-5e04da944fdb"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "0e7cd5e9-16f0-52dc-8a66-1f8ae098e371",
+      "labels": [
+        "Analytical_Pattern"
+      ],
+      "properties": {
+        "name": "Meteo G81 AP",
+        "description": "List the top 10 lowest temperature readings (in celsius) in City of Zurich in July 2015 with their coordinates.",
+        "process": "query",
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00"
+      }
+    },
+    {
+      "id": "1acfbf6e-955b-5721-bfc3-dc7ccf44a98c",
+      "labels": [
+        "Operator",
+        "Provenance_Annotate_Dataset_Operator"
+      ],
+      "properties": {
+        "name": "Annotate Meteo Dataset Operator",
+        "description": "Annotate the meteo tables with provenance information",
+        "dataset": "meteo"
+      }
+    },
+    {
+      "id": "98a06962-43f7-542b-a47e-bdc436e63e34",
+      "labels": [
+        "Operator",
+        "Provenance_SQL_Operator"
+      ],
+      "properties": {
+        "name": "G81 SQL Query Operator",
+        "description": "List the top 10 lowest temperature readings (in celsius) in City of Zurich in July 2015 with their coordinates.",
+        "command": "query",
+        "queryType": "SELECT",
+        "type": "SQL Query",
+        "step": 1,
+        "publishedDate": "2026-09-29",
+        "startTime": "10:00:00",
+        "query": "SELECT\n  mtn.latitude AS latitude,\n  mtn.longitude AS longitude,\n  mtn.tmin - 273.15 AS min_temp_in_celsius\nFROM meteo_tmin AS mtn\nWHERE\n  EXTRACT(MONTH FROM mtn.time) = 7\n  AND EXTRACT(YEAR FROM mtn.time) = 2015\n  AND (\n    ROUND(CAST(mtn.latitude AS DECIMAL), 1),\n    ROUND(CAST(mtn.longitude AS DECIMAL), 1)\n  ) IN ((47.4, 8.5))\nORDER BY\n  mtn.tmin ASC\nLIMIT 10"
+      }
+    },
+    {
+      "id": "1fe9bfee-e34c-5085-9f97-4b6aa18efc03",
+      "labels": [
+        "RelationalDatabase"
+      ],
+      "properties": {
+        "name": "meteo",
+        "description": "Meteorological database (ERA5-Land schema)"
+      }
+    },
+    {
+      "id": "ea8a0b97-4d4a-530e-89fa-5e04da944fdb",
+      "labels": [
+        "Table"
+      ],
+      "properties": {
+        "name": "meteo.meteo_tmin"
+      }
+    }
+  ]
+}
