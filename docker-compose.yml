@@ -29,33 +29,18 @@ services:
       - traefik
       - internal
 
-  # Git does not preserve directory read permissions across a clone: on a host with a
-  # restrictive umask, dependencies/postgres-seed can come out unreadable by
-  # meteo-postgres, which then silently skips it. Fixing that needs write access to the
-  # bind-mounted host path, which meteo-postgres itself no longer has once its volume is
-  # read-only, so a short-lived container does it first.
-  fix-seed-permissions:
-    image: busybox
-    volumes:
-      - ./dependencies/postgres-seed:/seed
-    command: ["chmod", "-R", "a+rX", "/seed"]
-    restart: "no"
-
   meteo-postgres:
-    image: ghcr.io/datagems-eosc/postgres-provsql:17-v1.12.0
+    # ERA5 readings for the City of Zurich cell, loaded on the first start only. They are
+    # baked into the image rather than bind-mounted: a stack deployed from git by Portainer
+    # does not see the clone's relative paths on the Docker host, and the mount comes up empty.
+    build: ./dependencies/postgres-seed
     labels:
       - traefik.enable=false
-    volumes:
-      # ERA5 readings for the City of Zurich cell, loaded on the first start only.
-      - ./dependencies/postgres-seed:/docker-entrypoint-initdb.d:ro
     environment:
       - POSTGRES_USER=provdemo
       - POSTGRES_PASSWORD=provdemo
       - POSTGRES_DB=meteo
     restart: always
-    depends_on:
-      fix-seed-permissions:
-        condition: service_completed_successfully
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U provdemo -d meteo" ]
       interval: 10s
