@@ -18,6 +18,7 @@ Needs a throwaway stack, so that an out-of-memory kill stays there:
 Usage:
     python3 scripts/memtest_questions.py <meteo_queries.csv> zurich > assets/memory_sweep.jsonl
     python3 scripts/memtest_questions.py <meteo_queries.csv> 532 536 616
+    python3 scripts/memtest_questions.py <meteo_queries.csv> 532 --semiring=why
 
 ``zurich`` runs every supported City of Zurich question the demo's data can answer: tables
 tmin, tmax, tp, windspeedmax and elevation, years 2005-2019. No LLM is configured, so the
@@ -86,9 +87,11 @@ def call(url: str, body: dict | None = None) -> dict:
     return json.load(urllib.request.urlopen(request, timeout=30))
 
 
-def measure(row: dict) -> dict:
+def measure(row: dict, semiring: str | None = None) -> dict:
+    """Without ``semiring``, every semiring is requested, as the demo does."""
     t0, peak = time.monotonic(), 0
-    task_id = call(f"{SERVICE}?probability=false", ap_for(row))["task_id"]
+    url = f"{SERVICE}/{semiring}" if semiring else SERVICE
+    task_id = call(f"{url}?probability=false", ap_for(row))["task_id"]
     status = {"status": "timeout", "error": f"no result after {DEADLINE_SECONDS} s"}
     while time.monotonic() - t0 < DEADLINE_SECONDS:
         time.sleep(0.3)
@@ -102,17 +105,21 @@ def measure(row: dict) -> dict:
         # ProvSQL ignores cancellation while evaluating: only a restart stops it.
         subprocess.run(["docker", "restart", CONTAINER], capture_output=True, check=False)
         time.sleep(15)
-    return {"question_id": row["question_id"], "status": status["status"],
+    returned = sorted({s for d in derivations for s in (d.get("provenance") or {})})
+    return {"question_id": row["question_id"], "semiring": semiring or "all",
+            "semirings_returned": returned, "status": status["status"],
             "seconds": round(time.monotonic() - t0, 1), "peak_backend_mb": round(peak / 1024),
             "rows": len(derivations), "error": str(status.get("error") or "")[:200]}
 
 
-def main(csv_path: str, targets: list[str]) -> None:
+def main(csv_path: str, args: list[str]) -> None:
+    semiring = next((a.split("=", 1)[1] for a in args if a.startswith("--semiring=")), None)
+    targets = [a for a in args if not a.startswith("--")]
     with open(csv_path, newline="") as f:
         rows = {r["question_id"]: r for r in csv.DictReader(f)}
     ids = [q for q, r in rows.items() if runnable_in_zurich(r)] if targets == ["zurich"] else targets
     for question_id in ids:
-        print(json.dumps(measure(rows[question_id])), flush=True)
+        print(json.dumps(measure(rows[question_id], semiring)), flush=True)
 
 
 if __name__ == "__main__":

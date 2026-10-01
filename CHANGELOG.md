@@ -4,7 +4,9 @@
 
 ### New Features
 
-- **Summary tab** — how many questions of the meteo question set ap-explanation supports (548 of 752), and why the 204 others are not, grouped by cause, with the questions and an example of each.
+- **Summary tab** — all 752 questions in a spreadsheet-like table, coloured green (runs), yellow (may exhaust memory, above the 3 GB limit) or red (not supported, or failing at run time), with counts and a status filter.
+- **Memory analysis: measurement setup and semirings** — the 3 GB limit (`--memory=3g --memory-swap=3g`), the databases measured and their row counts, and which semirings each shape concerns: shape 1 every semiring but `boolexpr` (and not the probability), shape 2 `formula` only. `scripts/memtest_group_size.sh` measures every semiring, `scripts/memtest_questions.py` takes `--semiring=`.
+- **Theoretically supported questions tab** (the former Summary tab) — how many questions of the meteo question set ap-explanation supports (548 of 752), and why the 204 others are not, grouped by cause, with the questions and an example of each.
 - **Memory analysis tab** — the questions whose provenance can exhaust the database's memory, and why: comparisons on a nested aggregate (memory about 3× per reading of the compared group) and aggregates over many rows (about 3 KB per row of the largest group; readings joined to elevation points multiply them). Each question gets an estimate, and the City of Zurich questions the demo's data can answer a measurement on a 3 GB-capped database. Produced by `scripts/memory_analysis.py`, `scripts/memtest_group_size.sh` and `scripts/memtest_questions.py`.
 - **Run cost** — after a live run, the Query runner shows its total time, the database time and peak database memory (the run's PostgreSQL backends, sampled every 0.1 s), and the plain SQL time. Live runs stamp the AP's `startTime`, so ap-explanation computes them afresh instead of returning its cached result.
 

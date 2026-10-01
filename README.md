@@ -1,9 +1,13 @@
 # Provenance Explorer: Zurich weather
 
 A Streamlit app about [**ap-explanation**](https://github.com/datagems-eosc/ap-explanation)
-and the meteo question set, in two tabs.
+and the meteo question set, in four tabs.
 
-**📊 Summary** — how many of the set's 752 questions ap-explanation supports (548) and why the
+**📋 Summary** — all 752 questions in one table, each row coloured: 🟢 runs without issue,
+🟡 may exhaust memory (estimated above the 3 GB limit used for the measurements), 🔴 not
+supported (rejected by ap-explanation, or failing at run time).
+
+**📊 Theoretically supported questions** — how many of the set's 752 questions ap-explanation supports (548) and why the
 other 204 are not, grouped by cause (scalar subquery reading a CTE, `HAVING`, `ORDER BY` on an
 aggregate, aggregates ProvSQL cannot explain, window functions, subqueries in conditions, and a
 ProvSQL bug on `COUNT(DISTINCT …)`), with the questions and an example for each. The data is
@@ -12,7 +16,9 @@ ap-explanation's `fixtures/meteo_queries.csv`, produced by its
 unsupported questions only).
 
 **🧠 Memory analysis** — the questions whose provenance can exhaust the database's memory,
-and why. Two query shapes make ProvSQL's `formula` evaluation outgrow memory, and ProvSQL
+and why. All measurements ran on a PostgreSQL + ProvSQL server limited to **3 GB of RAM and no
+swap** (`docker run --memory=3g --memory-swap=3g`); the tab lists its databases and their row
+counts. Two query shapes make ProvSQL's evaluation outgrow memory, and ProvSQL
 ignores cancellation while evaluating, so only the OOM killer or a restart ends the run:
 
 1. **A comparison on an aggregate computed in a CTE or subquery** (Q295's `WHERE
@@ -24,6 +30,10 @@ ignores cancellation while evaluating, so only the OOM killer or a restart ends 
    points of a cell (400 MB), over large regions, and above all when readings are joined to
    the elevation table, each reading paired with every point of its cell (1.85 GB for one
    month above 500 m).
+
+Shape 1 concerns every semiring but `boolexpr` (`formula` and `why` from 22 readings, `how`
+and `which` from 24–26; the probability is unaffected), shape 2 `formula` only, the one
+semiring ap-explanation explains aggregates with.
 
 The tab lists every question with either shape, its estimated memory, and, for the City of
 Zurich questions the demo's data can answer, the peak measured on a 3 GB-capped database.

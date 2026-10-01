@@ -3,6 +3,7 @@ import json
 from collections import Counter
 
 import httpx
+import pandas as pd
 import psycopg
 import streamlit as st
 from kiota_abstractions.api_error import APIError
@@ -15,6 +16,9 @@ from api import (
     service_healthy,
 )
 from utils import (
+    STATUS_MEMORY,
+    STATUS_OK,
+    STATUS_UNSUPPORTED,
     UNSUPPORTED_REASONS,
     ap_tables,
     cited_readings,
@@ -25,11 +29,14 @@ from utils import (
     load_ap,
     load_memory_group_size,
     load_memory_risk,
+    load_memory_semiring_service,
     load_memory_sweep,
     load_presets,
     load_question_set,
     load_recorded,
+    question_statuses,
     reading_labels,
+    seed_row_counts,
     shorten_formula,
     stamp_start_time,
     unsupported_reason,
@@ -140,14 +147,16 @@ def _render_cost(preset: dict, response: dict, source: str) -> None:
         help="Private memory (RssAnon) of the run's PostgreSQL backends, summed, at its "
              "highest sample (every 0.1 s). Shared buffers are not counted.")
     c_plain.metric(
-        "Plain SQL time", f"{plain['seconds']} s" if plain.get("seconds") is not None else "—",
+        "Plain SQL time", f"{plain['seconds']} s" if plain.get(
+            "seconds") is not None else "—",
         help="The same query run without provenance.")
 
     if source == "recorded":
         st.caption(preset.get("recorded_cost_note")
                    or "Database time and memory are only measured on live runs.")
     elif measured and not db["busy_seconds"]:
-        st.caption("The database work was shorter than the 0.1 s sampling interval.")
+        st.caption(
+            "The database work was shorter than the 0.1 s sampling interval.")
     elif measured and total is not None:
         st.caption(
             f"About {max(total - db['busy_seconds'], 0):.1f} s of the run were spent outside "
@@ -219,7 +228,8 @@ def _render_question(preset: dict) -> None:
     st.code(extract_sql(ap_data)
             or "-- no Provenance_SQL_Operator query", language="sql")
     st.caption(
-        "Tables: " + ", ".join(f"`{t}`" for t in ap_tables(ap_data)) + ". ap-explanation "
+        "Tables: " +
+        ", ".join(f"`{t}`" for t in ap_tables(ap_data)) + ". ap-explanation "
         "annotates them with provenance, then runs the query under ProvSQL.")
 
     st.divider()
@@ -265,7 +275,8 @@ def _render_question(preset: dict) -> None:
                 response = asyncio.run(explain(
                     stamp_start_time(ap_data),
                     None if semiring == _ALL_SEMIRINGS else semiring))
-            response |= {"plain": plain, "plain_error": plain_error, "db": monitor.report()}
+            response |= {"plain": plain,
+                         "plain_error": plain_error, "db": monitor.report()}
             st.session_state["last_run"] = {
                 "ap_id": ap_id, "source": "live", "response": response}
         except (httpx.HTTPError, ConnectionError, OSError):
@@ -329,14 +340,15 @@ def _render_summary() -> None:
                 [{"Id": q["question_id"], "Category": q["category"], "Question": q["question"],
                   "Tables": q["tables"].replace(";", ", ")} for q in qs],
                 width="stretch", hide_index=True)
-            st.markdown(f"**Example** — question {qs[0]['question_id']}: {qs[0]['question']}")
+            st.markdown(
+                f"**Example** — question {qs[0]['question_id']}: {qs[0]['question']}")
             st.code(qs[0]["sql"], language="sql")
             st.caption(f"Recorded error: {qs[0]['reason']}")
 
     st.caption(
         "Supported means the query is rewritten and evaluated; it does not promise the "
         "evaluation stays tractable on real data. Q295 is supported, yet its comparison on "
-        "an aggregate exhausts the database's memory (see Memory analysis).")
+        "an aggregate exhausts the database's memory (see *Memory analysis*).")
 
 
 _VERDICT_LABEL = {
@@ -382,13 +394,119 @@ def _risk_table(rows: list[dict], sweep: dict[str, dict]) -> None:
         width="stretch", hide_index=True)
 
 
+def _peak(c: dict) -> str:
+    """Peak memory of a benchmark run: runs under 0.3 s end before the first sample."""
+    if c["peak_backend_mb"] in ("", "0"):
+        return "< 0.3 s"
+    return format_mb(float(c["peak_backend_mb"]))
+
+
+def _render_memory_setup() -> None:
+    """The 3 GB limit, and the databases the measurements ran on."""
+    st.subheader("How it was measured")
+    st.markdown(
+        "**The memory limit is 3 GB.** Every measurement on this page ran on a throwaway "
+        "PostgreSQL 17 + ProvSQL 1.12 server (`ghcr.io/datagems-eosc/postgres-provsql:17-v1.12.0`), "
+        "started with `docker run --memory=3g --memory-swap=3g`: **3 GB of RAM and no swap for "
+        "the whole database server**. A query that needs more is killed by the kernel's OOM "
+        "killer; that is what *exhausts memory* means here. The verdicts follow from it: "
+        "**fine** under 100 MB, **heavy** from 100 MB to 3 GB (the run completes), **exhausts** "
+        "above 3 GB. The peak memory is the database backend's (`VmHWM` in `/proc`), sampled "
+        "every 0.2–0.3 s. A machine with more memory moves the line, not the shapes: memory "
+        "grows exponentially with shape 1, so a few more readings use up any machine.")
+    counts = seed_row_counts()
+    st.markdown("The server held two databases:")
+    st.table([
+        {"Database": "memtest", "Table": "t_wet_<n>, t_dry_<n>, one per test", "Rows": "n, from 4 to 31",
+         "Built from": "`generate_series(1, n)`: n readings in a single group, values of 1 to 9 mm "
+                       "(*wet*), or 4 in 5 at 0 mm (*dry*), annotated with `add_provenance`. "
+                       "Used for shape 1 (`scripts/memtest_group_size.sh`)."},
+        *[{"Database": "meteo", "Table": table, "Rows": f"{counts[table]:,}",
+           "Built from": ("Daily readings of the City of Zurich ERA5 cell (47.4, 8.5), "
+                          "2005-01-01 to 2019-12-31, from the Open-Meteo archive (model "
+                          "`era5_seamless`), in ERA5 units.")}
+          for table in ("meteo_tmin", "meteo_tmax", "meteo_tp", "meteo_windspeedmax") if table in counts],
+        {"Database": "meteo", "Table": "meteo_elevation", "Rows": f"{counts.get('meteo_elevation', 0):,}",
+         "Built from": "The elevation points of the same cell, copied from the dev server's "
+                       "`public.meteo_elevation_zurich`."},
+    ])
+    st.caption(
+        "Database `meteo` is the demo's own, loaded from `dependencies/postgres-seed/` "
+        "(`01_meteo.sql`). The questions ran through ap-explanation built from its repository "
+        "(the sql_rewriter changes after v1.1.1), with `probability=false` and no LLM, so time "
+        "and memory are the provenance's alone (`scripts/memtest_questions.py`).")
+
+
+_SEMIRING_ORDER = ["formula", "why", "how",
+                   "which", "boolexpr", "probability_evaluate"]
+
+
+def _render_semirings(curve: list[dict]) -> None:
+    """Which provenance semirings each shape concerns, measured."""
+    st.subheader("Which semirings are concerned")
+    st.markdown(
+        "ap-explanation computes five semirings: `formula`, `why`, `how`, `which` and "
+        "`boolexpr`. By default it requests all of them in one query, so **a request fails "
+        "as soon as one of its semirings exhausts memory**; asking for a single semiring "
+        "(`POST /api/v1/aps/explanation/{semiring}`) only pays for that one.")
+    col_cmp, col_agg = st.columns(2)
+    with col_cmp:
+        st.markdown("#### Shape 1: every semiring but `boolexpr`")
+        st.markdown(
+            "`formula` and `why` exceed 3 GB from 22 readings in the compared group, `how` "
+            "and `which` from 24–26: they grow more slowly, but just as exponentially. "
+            "`boolexpr` and the probability (`probability_evaluate`) stay small: they keep "
+            "the comparison as a compact circuit instead of expanding it.")
+        wet = [c for c in curve if c["values"] ==
+               "wet" and int(c["readings"]) >= 16]
+        sizes = sorted({int(c["readings"]) for c in wet})
+        cells = {(c["semiring"], int(c["readings"])): c for c in wet}
+        st.dataframe(
+            [{"Semiring": name.replace("probability_evaluate", "probability"),
+              **{f"{n} readings": (_peak(cells[(name, n)]) if cells[(name, n)]["status"] == "ok"
+                                   else "killed (3 GB)") if (name, n) in cells else ""
+                 for n in sizes}}
+             for name in _SEMIRING_ORDER if any((name, n) in cells for n in sizes)],
+            width="stretch", hide_index=True)
+        st.caption(
+            "Peak memory on database `memtest`, `SUM(v) > 0.001` over n readings; *< 0.3 s* "
+            "means the run ended before the first memory sample. Through ap-explanation, on "
+            "Q295 (31 readings):")
+        st.dataframe(
+            [{"Request": f"/{r['semiring']}" if r["semiring"] != "all" else "all semirings",
+              "Outcome": (f"killed at {format_mb(r['peak_backend_mb'])} after {r['seconds']} s"
+                          if "server closed" in r["error"] else
+                          f"ok, {format_mb(r['peak_backend_mb'])} in {r['seconds']} s")}
+             for r in load_memory_semiring_service() if r["question_id"] == "532"]
+            + [{"Request": "all semirings",
+                "Outcome": _measured(load_memory_sweep().get("532"))}],
+            width="stretch", hide_index=True)
+    with col_agg:
+        st.markdown("#### Shape 2: `formula` only")
+        st.markdown(
+            "ProvSQL evaluates an aggregate in the `formula` semiring only, so ap-explanation "
+            "explains aggregate queries with `formula` alone: by default it returns `formula` "
+            "and skips the others, and it rejects a request for any other semiring "
+            "(`AggregateSemiringError`). Shape 2's cost is therefore `formula`'s, whatever "
+            "is requested, and it cannot be avoided by choosing another semiring.")
+        st.dataframe(
+            [{"Request": "556 · " + (f"/{r['semiring']}" if r["semiring"] != "all" else "all semirings"),
+              "Semirings returned": ", ".join(r["semirings_returned"]) or "—",
+              "Outcome": (f"ok, {format_mb(r['peak_backend_mb'])} in {r['seconds']} s"
+                          if r["status"] == "success" else f"rejected: {r['error']}")}
+             for r in load_memory_semiring_service() if r["question_id"] == "556"],
+            width="stretch", hide_index=True)
+        st.caption("556 averages the 134,280 elevation points of Zurich's cell.")
+
+
 def _render_memory_analysis() -> None:
     """The questions whose provenance can exhaust the database's memory, and why."""
     risk = load_memory_risk()
     sweep = load_memory_sweep()
     curve = load_memory_group_size()
     supported = [r for r in risk if r["supported"] == "true"]
-    at_risk = [r for r in supported if r["verdict"] in ("exhausts", "heavy", "unknown")]
+    at_risk = [r for r in supported if r["verdict"]
+               in ("exhausts", "heavy", "unknown")]
 
     st.markdown(
         "Two query shapes make ProvSQL build a provenance formula that outgrows the "
@@ -396,6 +514,8 @@ def _render_memory_analysis() -> None:
         "`statement_timeout` and `pg_terminate_backend` while evaluating, so the run ends "
         "when the OOM killer takes the database backend down, with every session on it, or "
         "when the database is restarted.")
+
+    _render_memory_setup()
 
     # A question can have both shapes: count it once, by its worst verdict.
     order = ["exhausts", "heavy", "unknown", "fine"]
@@ -429,17 +549,16 @@ def _render_memory_analysis() -> None:
             "of mostly dry days cost the same.")
         st.code(extract_sql(load_ap("Q295")), language="sql")
         st.caption(
-            "Measured on a 3 GB-capped database, `SUM(v) > 0.001` over a group of n "
-            "readings (`scripts/memtest_group_size.sh`):")
+            "Measured on database `memtest` (3 GB limit), `formula` semiring, "
+            "`SUM(v) > 0.001` over a group of n readings (`scripts/memtest_group_size.sh`):")
         st.dataframe(
             [{"Readings in the group": int(c["readings"]),
               "Values": "all non-zero" if c["values"] == "wet" else "4 in 5 at zero",
-              "Formula size": f"{int(c['formula_chars']):,} chars" if c["formula_chars"] else "—",
-              "Peak memory": (format_mb(float(c["peak_backend_mb"]))
-                              if c["peak_backend_mb"] not in ("", "0") else "too fast to sample"),
+              "Formula size": f"{int(c['result_chars']):,} chars" if c["result_chars"] else "—",
+              "Peak memory": _peak(c),
               "Time": f"{c['seconds']} s",
-              "Outcome": "ok" if c["status"] == "ok" else f"{c['status']} (3 GB cap)"}
-             for c in curve],
+              "Outcome": "ok" if c["status"] == "ok" else f"{c['status']} (3 GB limit)"}
+             for c in curve if c["semiring"] == "formula" and int(c["readings"]) >= 12],
             width="stretch", hide_index=True)
     with col_join:
         st.markdown("#### 2. Aggregate over many rows")
@@ -454,7 +573,8 @@ def _render_memory_analysis() -> None:
             "(`ORDER BY elevation DESC LIMIT 1`, as the *highest point* questions do) avoids "
             "the pairs.")
         st.code(_ELEVATION_JOIN_EXAMPLE, language="sql")
-        st.caption("Measured through ap-explanation on the demo's data, 3 GB-capped database:")
+        st.caption(
+            "Measured through ap-explanation on the demo's data, 3 GB-capped database:")
         st.dataframe(
             [{"Question": f"{q} · {label}", "Rows in the formula": rows,
               "Measured": _measured(sweep.get(q)) if q in sweep else measured}
@@ -462,11 +582,16 @@ def _render_memory_analysis() -> None:
                  ("556", "average elevation of the cell", "134,280 points", None),
                  ("—", "same points, counted per 50 m band", "11 groups, 134,280 points",
                   "237 MB in 4.4 s"),
-                 ("148", "one week above 500 m", "7 × 33,096 = 231,672 pairs", None),
-                 ("152", "one month above 500 m", "31 × 33,096 = 1,025,976 pairs", None),
-                 ("156", "2015–2016 above 500 m", "731 × 33,096 = 24,193,176 pairs", None),
-             ]],
+                 ("148", "one week above 500 m",
+                  "7 × 33,096 = 231,672 pairs", None),
+                 ("152", "one month above 500 m",
+                  "31 × 33,096 = 1,025,976 pairs", None),
+                 ("156", "2015–2016 above 500 m",
+                  "731 × 33,096 = 24,193,176 pairs", None),
+            ]],
             width="stretch", hide_index=True)
+
+    _render_semirings(curve)
 
     st.subheader("Supported questions that may exhaust memory")
     st.caption(
@@ -485,8 +610,10 @@ def _render_memory_analysis() -> None:
 
     st.subheader("Measured on the demo's data")
     zurich_runs = [r for r in sweep.values() if r.get("sweep")]
-    over = [r for r in zurich_runs if r["status"] != "success" or r["peak_backend_mb"] >= 100]
-    risk_ids = {r["question_id"] for r in risk if r["verdict"] in ("exhausts", "heavy")}
+    over = [r for r in zurich_runs if r["status"]
+            != "success" or r["peak_backend_mb"] >= 100]
+    risk_ids = {r["question_id"]
+                for r in risk if r["verdict"] in ("exhausts", "heavy")}
     st.markdown(
         f"Every supported City of Zurich question the demo's data can answer "
         f"(**{len(zurich_runs)}**) was run through ap-explanation on a 3 GB-capped database "
@@ -501,7 +628,8 @@ def _render_memory_analysis() -> None:
              for r in sorted(zurich_runs, key=lambda r: -r["peak_backend_mb"])],
             width="stretch", hide_index=True)
 
-    unsupported = [r for r in risk if r["supported"] != "true" and r["verdict"] in ("exhausts", "heavy")]
+    unsupported = [r for r in risk if r["supported"] !=
+                   "true" and r["verdict"] in ("exhausts", "heavy")]
     n_unsupported = len({r["question_id"] for r in unsupported})
     with st.expander(f"Unsupported questions with the same shapes — {n_unsupported}"):
         st.markdown(
@@ -511,10 +639,71 @@ def _render_memory_analysis() -> None:
         _risk_table(unsupported, sweep)
 
 
-tab_summary, tab_memory, tab_runner = st.tabs(
-    ["📊 Summary", "🧠 Memory analysis", "🔎 Query runner"])
+# Row colours of the Summary, readable in light and dark themes (dark text on a light fill).
+_STATUS_STYLE = {
+    STATUS_OK: "background-color: #d3f0d6; color: #10361a",
+    STATUS_MEMORY: "background-color: #fdf0b8; color: #3d3000",
+    STATUS_UNSUPPORTED: "background-color: #f8d3d3; color: #4a1010",
+}
+_STATUS_ICON_BY = {STATUS_OK: "🟢", STATUS_MEMORY: "🟡", STATUS_UNSUPPORTED: "🔴"}
+
+
+def _render_question_summary() -> None:
+    """Every question of the set, coloured by whether it can be explained."""
+    rows = question_statuses()
+    counts = Counter(r["Status"] for r in rows)
+    total = len(rows)
+
+    st.markdown(
+        f"The **{total}** questions of the meteo question set, and whether ap-explanation can "
+        "explain them: 🟢 **runs** without issue, 🟡 **may exhaust memory** (estimated above "
+        "the 3 GB limit, see *Memory analysis*), 🔴 **not supported** (rejected, see "
+        "*Theoretically supported questions*, or failing at run time).")
+    c_ok, c_mem, c_ko = st.columns(3)
+    for col, status in ((c_ok, STATUS_OK), (c_mem, STATUS_MEMORY), (c_ko, STATUS_UNSUPPORTED)):
+        col.metric(f"{_STATUS_ICON_BY[status]} {status}",
+                   f"{counts[status]} ({counts[status] / total:.0%})")
+
+    shown = st.multiselect(
+        "Show", [STATUS_OK, STATUS_MEMORY, STATUS_UNSUPPORTED],
+        default=[STATUS_OK, STATUS_MEMORY,
+                 STATUS_UNSUPPORTED], key="summary_status",
+        format_func=lambda s: f"{_STATUS_ICON_BY[s]} {s}")
+    columns = ["Id", "Status", "Question", "Why", "Estimated memory", "Measured (3 GB cap)",
+               "Category", "Tables"]
+    table = pd.DataFrame(
+        [r for r in rows if r["Status"] in shown], columns=columns)
+    if table.empty:
+        st.info("No question with the selected status.")
+        return
+    st.dataframe(
+        table.style.apply(
+            lambda row: [_STATUS_STYLE[row["Status"]]] * len(row), axis=1),
+        width="stretch", hide_index=True, height=640,
+        column_config={
+            "Id": st.column_config.NumberColumn(width="small", format="%d"),
+            "Status": st.column_config.TextColumn(width="medium"),
+            "Category": st.column_config.TextColumn(width="small"),
+            "Question": st.column_config.TextColumn(width="large"),
+            "Why": st.column_config.TextColumn(width="large"),
+        })
+    st.caption(
+        "🟢 also covers the questions estimated between 100 MB and 3 GB: they complete within "
+        "the limit, and their estimate is in the *Estimated memory* column. Estimates come "
+        "from the SQL (`scripts/memory_analysis.py`); *Measured* gives the actual peak where "
+        "the question was run on the demo's data. A run-time failure measured on one question "
+        "is applied to the other regions of the same template, whose SQL differs only by the "
+        "region. Sort or search the table from its header and toolbar.")
+
+
+tab_summary, tab_supported, tab_memory, tab_runner = st.tabs(
+    ["📋 Summary", "📊 Theoretically supported questions", "🧠 Memory analysis",
+     "🔎 Demo query runner"])
 
 with tab_summary:
+    _render_question_summary()
+
+with tab_supported:
     _render_summary()
 
 with tab_memory:
@@ -522,9 +711,7 @@ with tab_memory:
 
 with tab_runner:
     st.caption(
-        "Data: one ERA5 cell, City of Zurich (47.4, 8.5), one reading per day from 2005 to "
-        "2019 (Open-Meteo archive, model `era5_seamless`), stored in ERA5 units (K, m, m/s). "
-        "Elevation: the cell's 134,280 points.")
+        "NOTE : This is running some samples queries just to what provenance adds")
     selected = st.selectbox(
         "Question", _PRESET_LABELS, key="preset",
         help="Weather questions from the meteo question set, each packaged as an "

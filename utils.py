@@ -24,7 +24,7 @@ UNSUPPORTED_REASONS = [
     ("HAVING", "HAVING clause", (
         "ap-explanation's rewriter rejects `HAVING`. The same filter written as a `WHERE` on a "
         "nested `SELECT` is accepted, but it then compares a nested aggregate, which can "
-        "exhaust memory (see Memory analysis)."
+        "exhaust memory (see *Memory analysis*)."
     )),
     ("ORDER BY on", "ORDER BY on an aggregate", (
         "The query sorts groups by an aggregate, e.g. `ORDER BY AVG(tp) DESC LIMIT 1` to pick the "
@@ -209,3 +209,78 @@ def format_mb(mb: float) -> str:
             value = mb / size
             return f"{value:,.0f} {unit}" if value >= 100 else f"{value:.1f} {unit}"
     return f"{mb:.0f} MB"
+
+
+SEED_DATA_DIR = Path(__file__).parent / "dependencies" / "postgres-seed" / "data"
+MEMORY_SEMIRING_SERVICE_PATH = ASSETS_DIR / "memory_semiring_service.jsonl"
+
+
+def seed_row_counts() -> dict[str, int]:
+    """Rows of each table of the demo's database, from its seed CSVs (header excluded)."""
+    counts = {}
+    for path in sorted(SEED_DATA_DIR.glob("*.csv")):
+        with path.open() as f:
+            counts[path.stem] = sum(1 for _ in f) - 1
+    return counts
+
+
+def load_memory_semiring_service() -> list[dict]:
+    """Q295 and 556 run through ap-explanation, one request per semiring."""
+    with MEMORY_SEMIRING_SERVICE_PATH.open() as f:
+        return [json.loads(line) for line in f if line.strip()]
+
+
+# Status of a question in the Summary tab, worst first.
+STATUS_UNSUPPORTED = "Not supported"
+STATUS_MEMORY = "May exhaust memory"
+STATUS_OK = "Runs"
+
+
+def question_statuses() -> list[dict]:
+    """Every question of the set with its status and why:
+
+    - Not supported: ap-explanation rejects it, or it fails at run time for another
+      reason than memory (a failure measured on one question of a template is assumed
+      for the others: their SQL differs only by the region);
+    - May exhaust memory: estimated above 3 GB, or not estimable (no elevation data);
+    - Runs: the rest, with the estimate when it is above 100 MB.
+    """
+    questions = load_question_set()
+    risk: dict[str, list[dict]] = {}
+    for r in load_memory_risk():
+        risk.setdefault(r["question_id"], []).append(r)
+    sweep = load_memory_sweep()
+    template_of = {q["question_id"]: (q["category"], q["template_index"]) for q in questions}
+    failing_templates = {}
+    for run in sweep.values():
+        if (run["status"] == "failure" and "server closed the connection" not in run["error"]
+                and run["question_id"] in template_of):
+            failing_templates[template_of[run["question_id"]]] = (run["question_id"], run["error"])
+
+    out = []
+    for q in questions:
+        findings = sorted(risk.get(q["question_id"], []), key=lambda r: -r["estimated_mb"])
+        worst = findings[0] if findings else None
+        failure = failing_templates.get((q["category"], q["template_index"]))
+        estimate = format_mb(worst["estimated_mb"]) if worst else ""
+        if q["supported"] != "true":
+            status, why = STATUS_UNSUPPORTED, unsupported_reason(q["reason"])[0]
+        elif failure:
+            measured_on, error = failure
+            status = STATUS_UNSUPPORTED
+            why = f"Fails at run time (measured on {measured_on}): {error[:90]}"
+        elif worst and worst["verdict"] in ("exhausts", "unknown"):
+            status = STATUS_MEMORY
+            why = worst["size_text"]
+        else:
+            status = STATUS_OK
+            why = worst["size_text"] if worst and worst["verdict"] == "heavy" else ""
+        run = sweep.get(q["question_id"])
+        out.append({
+            "Id": int(q["question_id"]), "Category": q["category"], "Question": q["question"],
+            "Tables": q["tables"].replace(";", ", "), "Status": status, "Why": why,
+            "Estimated memory": estimate if status != STATUS_UNSUPPORTED else "",
+            "Measured (3 GB cap)": (f"{format_mb(run['peak_backend_mb'])}, {run['status']}, {run['seconds']} s"
+                                    if run else ""),
+        })
+    return out

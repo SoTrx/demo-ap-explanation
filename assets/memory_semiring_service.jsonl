@@ -1,0 +1,7 @@
+{"question_id": "532", "semiring": "formula", "semirings_returned": [], "status": "failure", "seconds": 4.5, "peak_backend_mb": 2945, "rows": 0, "error": "consuming input failed: server closed the connection unexpectedly"}
+{"question_id": "532", "semiring": "why", "semirings_returned": [], "status": "failure", "seconds": 4.5, "peak_backend_mb": 2995, "rows": 0, "error": "consuming input failed: server closed the connection unexpectedly"}
+{"question_id": "532", "semiring": "how", "semirings_returned": [], "status": "failure", "seconds": 4.5, "peak_backend_mb": 2932, "rows": 0, "error": "consuming input failed: server closed the connection unexpectedly"}
+{"question_id": "532", "semiring": "which", "semirings_returned": [], "status": "failure", "seconds": 4.4, "peak_backend_mb": 2958, "rows": 0, "error": "consuming input failed: server closed the connection unexpectedly"}
+{"question_id": "532", "semiring": "boolexpr", "semirings_returned": ["boolexpr"], "status": "success", "seconds": 0.8, "peak_backend_mb": 34, "rows": 1, "error": ""}
+{"question_id": "556", "semiring": "all", "semirings_returned": ["formula"], "status": "success", "seconds": 10.6, "peak_backend_mb": 477, "rows": 1, "error": ""}
+{"question_id": "556", "semiring": "why", "semirings_returned": [], "status": "failure", "seconds": 0.4, "peak_backend_mb": 0, "rows": 0, "error": "Aggregate results can only be explained with the formula semiring"}
