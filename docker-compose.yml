@@ -1,7 +1,7 @@
 services:
 
   app:
-    image: ghcr.io/sotrx/sotrx/demo-ap-explanation:v0.2.1
+    image: ghcr.io/sotrx/sotrx/demo-ap-explanation:v0.2.2
     labels:
     - traefik.enable=true
     - traefik.http.routers.demo-explanation.rule=PathPrefix(`/demo-explanation`)
