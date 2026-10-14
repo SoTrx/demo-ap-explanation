@@ -11,7 +11,10 @@
 #     ghcr.io/datagems-eosc/postgres-provsql:17-v1.12.0
 #   scripts/memtest_group_size.sh > assets/memory_group_size.csv
 #   docker rm -f provsql-memtest
-# ProvSQL ignores cancellation while evaluating, so a run over TIMEOUT restarts the container.
+# ProvSQL 1.12 ignores cancellation while evaluating, so a run over TIMEOUT restarts the container.
+# The same run on an image of ProvSQL 1.13 (provsql:master, see scripts/provsql_compare.py)
+# gives assets/memory_group_size_113.csv: it refuses the comparison past provsql.max_worlds
+# possible worlds of the group (status "refused") instead of running out of memory.
 C=${CONTAINER:-provsql-memtest}
 TIMEOUT=${TIMEOUT:-90}
 export LC_NUMERIC=C
@@ -44,13 +47,14 @@ run() {  # run <n> <wet|dry> <function>: wet readings are all non-zero, dry ones
     [[ "$hwm" =~ ^[0-9]+$ ]] && (( hwm > peak )) && peak=$hwm
     out=$(docker exec "$C" cat "/tmp/out_$app" 2>/dev/null)
     if [[ "$out" == *done* ]]; then
-      if [[ "$out" == *"server closed"* || "$out" == *terminated* ]]; then status=killed; else status=ok; fi
+      if [[ "$out" == *"server closed"* || "$out" == *terminated* ]]; then status=killed
+      elif [[ "$out" == *ERROR* ]]; then status=refused; else status=ok; fi
       break
     fi
   done
   local chars=""
   [ "$status" = ok ] && chars=$(echo "$out" | head -1 | cut -d'|' -f1)
-  printf '%s,%s,%s,%s,%s,%.1f,%s\n' "$n" "$kind" "${fn#sr_}" "$status" "$chars" "$(echo "$(date +%s.%N) - $t0" | bc)" "$((peak / 1024))"
+  printf '%s,%s,%s,%s,%s,%.1f,%s\n' "$n" "$kind" "${fn#sr_}" "$status" "$chars" "$(awk "BEGIN { print $(date +%s.%N) - $t0 }")" "$((peak / 1024))"
   [ "$status" = timeout ] && docker restart "$C" >/dev/null
   [ "$status" != ok ] && sleep 5 && wait_ready
 }

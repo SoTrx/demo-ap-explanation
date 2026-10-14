@@ -16,9 +16,9 @@ Needs a throwaway stack, so that an out-of-memory kill stays there:
       -e REDIS_BROKER_URI=redis://memtest-redis:6379/0 -e OIDC_ISSUER= <ap-explanation image>
 
 Usage:
-    python3 scripts/memtest_questions.py <meteo_queries.csv> zurich > assets/memory_sweep.jsonl
-    python3 scripts/memtest_questions.py <meteo_queries.csv> 532 536 616
-    python3 scripts/memtest_questions.py <meteo_queries.csv> 532 --semiring=why
+    python3 scripts/memtest_questions.py assets/meteo_queries.csv zurich > assets/memory_sweep.jsonl
+    python3 scripts/memtest_questions.py assets/meteo_queries.csv 532 536 616
+    python3 scripts/memtest_questions.py assets/meteo_queries.csv 532 --semiring=why
 
 ``zurich`` runs every supported City of Zurich question the demo's data can answer: tables
 tmin, tmax, tp, windspeedmax and elevation, years 2005-2019. No LLM is configured, so the

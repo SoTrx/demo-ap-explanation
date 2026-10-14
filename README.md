@@ -1,24 +1,43 @@
 # Provenance Explorer: Zurich weather
 
 A Streamlit app about [**ap-explanation**](https://github.com/datagems-eosc/ap-explanation)
-and the meteo question set, in four tabs.
+and the meteo question set, in five tabs.
 
-**📋 Summary** — all 752 questions in one table, each row coloured: 🟢 runs without issue,
+**📋 Summary - ProvSQL 1.12** — all 752 questions in one table, each row coloured: 🟢 runs without issue,
 🟡 may exhaust memory (estimated above the 3 GB limit used for the measurements), 🔴 not
-supported (rejected by ap-explanation, or failing at run time).
+supported (rejected by ap-explanation, failing at run time, or not returning the SQL answer:
+9 supported templates do arithmetic on aggregates that ProvSQL 1.12 gets wrong). 462 run, 46
+may exhaust memory, 244 are not supported. A column gives each question's status on ProvSQL 1.13.
+
+**📋 Summary - ProvSQL 1.13 (master at `45320ea7`)** — the same table on ProvSQL 1.13, measured
+through ap-explanation itself, twice:
+- **as is** (v1.2.0, as deployed): 440 run, 64 may exhaust memory, 248 are not supported. ProvSQL
+  1.13 breaks 23 of the supported templates that work on ProvSQL 1.12 (wrong rows, a database
+  killed, not finished);
+- **patched** (ap-explanation branch `feat/provsql-1.13-possible-worlds`: `LIMIT plain(k)`, rows
+  kept where `present(provenance())`, `HAVING` lifted, only on ProvSQL 1.13): 564 run, 48 may
+  exhaust memory, 140 are not supported, and every supported template that works on ProvSQL 1.12
+  works.
+
+Each question also says what blocks it (ProvSQL, ap-explanation, a ProvSQL bug, its own SQL, the
+demo's data) and what would remove it. Each template was run on its City of Zurich question; the
+82 questions that may exhaust memory were run themselves, on the demo's data copied to every
+cell of their region, with `provsql.max_memory = '1GB'`: it stopped one of them, the database
+was killed on 16 (ProvSQL's circuit-store worker and parallel workers grow outside the budget),
+and `provsql.max_worlds` refuses the comparisons on aggregates cleanly.
 
 **📊 Theoretically supported questions** — how many of the set's 752 questions ap-explanation supports (548) and why the
 other 204 are not, grouped by cause (scalar subquery reading a CTE, `HAVING`, `ORDER BY` on an
 aggregate, aggregates ProvSQL cannot explain, window functions, subqueries in conditions, and a
 ProvSQL bug on `COUNT(DISTINCT …)`), with the questions and an example for each. The data is
 ap-explanation's `fixtures/meteo_queries.csv`, produced by its
-`scripts/classify_meteo_queries.py` (`assets/meteo_queries.csv` here, SQL kept for the
-unsupported questions only).
+`scripts/classify_meteo_queries.py` (`assets/meteo_queries.csv` here, with the SQL of every
+question).
 
 **🧠 Memory analysis** — the questions whose provenance can exhaust the database's memory,
 and why. All measurements ran on a PostgreSQL + ProvSQL server limited to **3 GB of RAM and no
 swap** (`docker run --memory=3g --memory-swap=3g`); the tab lists its databases and their row
-counts. Two query shapes make ProvSQL's evaluation outgrow memory, and ProvSQL
+counts. Two query shapes make ProvSQL's evaluation outgrow memory, and ProvSQL 1.12
 ignores cancellation while evaluating, so only the OOM killer or a restart ends the run:
 
 1. **A comparison on an aggregate computed in a CTE or subquery** (Q295's `WHERE
@@ -47,6 +66,57 @@ It reads files produced by three scripts:
 
 The two measurement scripts need a throwaway, memory-capped database; their docstrings give
 the commands. Never run them against a shared database.
+
+<a id="provsql-113"></a>
+**🆕 ProvSQL 1.13** — what the next ProvSQL changes for the question set. The demo runs
+ProvSQL 1.12; 1.13 is not released, so its development branch (master at `45320ea7`,
+14 October 2026) was built on the demo's database image and given the same queries: the City
+of Zurich question of each of the 51 unsupported templates (the 204 unsupported questions are
+these templates asked of four regions) and the six demo questions, with the `formula`
+semiring, each in a database of its own capped at 3 GB.
+
+- **More questions are explained, once ap-explanation changes the queries it sends.** 25 of
+  the 51 templates then run and return the plain SQL answer, against 2 on ProvSQL 1.12, and 5
+  more run with an empty answer on the demo's data. `ORDER BY` on an aggregate, `HAVING` and
+  window functions work; `PERCENTILE_CONT`, `REGR_SLOPE` and `CORR` are still not explained;
+  the *lowest / highest point* templates run but do not return the SQL answer.
+- **Sent as they are today, the queries break.** ProvSQL 1.13 reads `ORDER BY … LIMIT k` in
+  every possible world, so G81 runs out of memory and C155 and T157 do not finish. Every
+  `LIMIT k` has to become `LIMIT plain(k)`, the rows have to be filtered by
+  `present(provenance())`, and ap-explanation has to stop refusing `HAVING`. Refusals also
+  change form (SQLSTATE `0A000`, with a `provsql-reason` on the `DETAIL` line).
+- **A comparison on an aggregate is refused instead of exhausting memory**, past
+  `provsql.max_worlds` possible worlds of the group (2²⁰ by default, 20 readings). Under that
+  it costs what it did, so Q295 gets an error instead of an answer. Cancellation now works.
+  Aggregates over many rows cost the same.
+- **`provsql.max_memory` stops the evaluation, not the database's growth.** It did not stop the
+  two evaluations it was first tried on (reported as
+  [provsql#104](https://github.com/PierreSenellart/provsql/issues/104), fixed on master on
+  13 October 2026): G81 now stops at 1 GB instead of being killed at 3 GB, and a 1 GB budget kills
+  no backend over the 57 questions. The numbers above are the same on both builds. Still open:
+  the budget is not checked while the possible worlds of a comparison are listed (the months of
+  2019 with `max_worlds = 0` are killed at 3 GB), question 412 runs to the end at 1.7 GB under it,
+  and ProvSQL's circuit store, shared by the whole database, grew by 4 GB on one question. On
+  the questions that may exhaust memory, run on their region's data, the database was killed on
+  16 of 46 under a 1 GB budget: the circuit store's worker and parallel workers grow outside it.
+
+| Script | Output | What it does |
+|--------|--------|--------------|
+| `scripts/provsql_compare.py sweep` | `assets/provsql_113_sweep.jsonl` | Runs the questions on a ProvSQL version, as sent today or adapted, and records outcome, time, memory and whether the answer is the plain SQL one |
+| `scripts/provsql_compare.py checks` | `assets/provsql_113_checks.jsonl` | Runs the run-time problems one by one: comparison on an aggregate, top-k, large aggregates, cancellation, memory limit |
+| `scripts/provsql_compare.py sweep --max-memory=1GB` | `assets/provsql_113_sweep_maxmem1g.jsonl` | The same questions with `provsql.max_memory = '1GB'` |
+| `scripts/memtest_group_size.sh` | `assets/memory_group_size_113.csv` | The measurement of shape 1, on ProvSQL 1.13 |
+| `scripts/provsql_compare.py sweep --adapted --supported=assets/meteo_queries.csv` | `assets/provsql_113_supported_adapted.jsonl` | The supported City of Zurich questions, adapted |
+| `scripts/apx_service_check.py run … zurich` | `assets/apx_service_{113,112}.jsonl`, `assets/apx_service_{113,112}_patched.jsonl` | The City of Zurich question of every template sent to ap-explanation itself (as is, and patched with `APX_IMAGE`), which annotates the tables and asks for every semiring |
+| `scripts/apx_service_check.py run … --max-memory=1GB --reuse` | `assets/apx_service_113_memory.jsonl`, `assets/apx_service_113_memory_patched.jsonl` | The questions that may exhaust memory, on the demo's data copied to their region's cells (`prepare … --regions`) |
+
+`scripts/provsql_compare.py` needs a checkout of ap-explanation at v1.2.0 (for its SQL rewriter)
+and one database image per ProvSQL version, annotated by `scripts/provsql_compare_setup.sql`;
+`scripts/apx_service_check.py` needs the ap-explanation image and snapshots the service itself
+annotated. Their docstrings give the commands. The `--regions` snapshot holds 41 million
+elevation points: a container started from it copies its 44 GB on first write, hence `--reuse`. The tables the demo's seed lacks (`meteo_tmean`, `meteo_sdmax`,
+`meteo_ssrd`, land cover) are stand-ins derived from the readings at hand
+(`scripts/meteo_standins.sql`).
 
 **🔎 Query runner** — runs a question through ap-explanation and shows:
 
@@ -195,15 +265,38 @@ ap-explanation** is disabled until `AP_EXPLANATION_SERVICE_URL` answers on `/api
 | `AP_EXPLANATION_SERVICE_URL` | `http://ap-explanation:5000` | ap-explanation base URL |
 | `PLAIN_DSN` | unset | libpq DSN of the database, for the plain SQL answer on live runs |
 
+### Deploying standalone (e.g. Portainer)
+
+Outside the dev container, `docker compose up` reads the same files from a plain
+`git clone`. Two gotchas that don't show up in the dev container:
+
+- **Base path.** If a reverse proxy serves the app under a path prefix (the bundled
+  Traefik labels use `/demo-explanation`), set `APP_BASE_URL_PATH` (e.g. in Portainer's
+  stack environment variables) to that same prefix, or the UI loads a blank page.
+- **Seed data.** `meteo-postgres` is built from `dependencies/postgres-seed/Dockerfile`, which
+  copies the ERA5 seed SQL and CSVs into the image. They are not bind-mounted because a
+  stack deployed from git by Portainer does not see the clone's relative paths on the Docker
+  host: the mount came up empty, Postgres logged `ignoring /docker-entrypoint-initdb.d/*`, and
+  every query failed with `relation "meteo_tmin" does not exist`. The data is loaded on the
+  container's first start only; it has no named volume, so recreating the container re-seeds
+  it. To fix a stack stuck on an empty database, redeploy it with the image rebuilt
+  (**Update the stack**, with *Re-pull image and redeploy* on). Check with
+  `docker compose exec meteo-postgres psql -U provdemo -d meteo -c '\dt meteo.*'`: five
+  tables, `meteo_tmin`/`tmax`/`tp`/`windspeedmax` at 5,478 rows each and `meteo_elevation`
+  at 134,280.
+
 ---
 
 ## Known limitations
 
 - **Q295 can take the database down.** Its filter compares a `SUM` computed in a CTE, which
   ProvSQL evaluates as a comparison over an aggregate. On real data it used up 54 GB of memory
-  in about 6 minutes, with every semiring and with `formula` alone, and ProvSQL ignores
+  in about 6 minutes, with every semiring and with `formula` alone, and ProvSQL 1.12 ignores
   `statement_timeout` and `pg_terminate_backend` while evaluating it. The demo only replays its
   recorded failure. The same holds for any comparison on an aggregate (HAVING-like filters).
+  ProvSQL 1.13 refuses such a comparison instead, see [ProvSQL 1.13](#provsql-113).
+- **ProvSQL 1.13 is not a drop-in upgrade.** The demo stays on ProvSQL 1.12: with the queries
+  ap-explanation sends today, 1.13 breaks G81, C155 and T157, see [ProvSQL 1.13](#provsql-113).
 - **One AP at a time per database.** ap-explanation holds a Redis lock per database while a task
   runs, so concurrent runs queue.
 - **Tables stay annotated between runs.** ap-explanation leaves the provenance columns in place.

@@ -16,6 +16,11 @@ from api import (
     service_healthy,
 )
 from utils import (
+    PROVSQL_NEXT_BUILD,
+    PROVSQL_NEXT_COMMIT,
+    RUN_CURRENT,
+    RUN_NEXT,
+    RUN_NEXT_ADAPTED,
     STATUS_MEMORY,
     STATUS_OK,
     STATUS_UNSUPPORTED,
@@ -28,18 +33,30 @@ from utils import (
     format_reading,
     load_ap,
     load_memory_group_size,
+    load_memory_group_size_next,
     load_memory_risk,
     load_memory_semiring_service,
     load_memory_sweep,
     load_presets,
+    load_provsql_checks,
+    load_provsql_sweep,
+    load_provsql_sweep_max_memory,
+    question_statuses_next,
+    SERVICE_DEADLINE_SECONDS,
+    APX_PATCH_BRANCH,
+    load_service_memory_runs,
+    load_service_runs,
+    service_outcome,
     load_question_set,
     load_recorded,
     question_statuses,
     reading_labels,
+    run_outcome,
     seed_row_counts,
     shorten_formula,
     stamp_start_time,
     unsupported_reason,
+    was_killed,
 )
 
 TITLE = "Provenance Explorer: Zurich weather"
@@ -242,8 +259,8 @@ def _render_question(preset: dict) -> None:
     service_up = _service_up()
     if not preset.get("live", True):
         st.warning(
-            "Live runs are disabled for this question: ProvSQL evaluates its comparison on an "
-            "aggregate by exhausting the database's memory, and ignores cancellation. "
+            "Live runs are disabled for this question: ProvSQL 1.12 evaluates its comparison on "
+            "an aggregate by exhausting the database's memory, and ignores cancellation. "
             "Show the recorded run instead.")
     elif not service_up:
         st.warning(
@@ -348,7 +365,8 @@ def _render_summary() -> None:
     st.caption(
         "Supported means the query is rewritten and evaluated; it does not promise the "
         "evaluation stays tractable on real data. Q295 is supported, yet its comparison on "
-        "an aggregate exhausts the database's memory (see *Memory analysis*).")
+        "an aggregate exhausts the database's memory (see *Memory analysis*). The reasons are "
+        "those of ProvSQL 1.12; *ProvSQL 1.13* shows which of them the next version lifts.")
 
 
 _VERDICT_LABEL = {
@@ -510,10 +528,13 @@ def _render_memory_analysis() -> None:
 
     st.markdown(
         "Two query shapes make ProvSQL build a provenance formula that outgrows the "
-        "database's memory. Once it starts, nothing stops it: ProvSQL ignores "
+        "database's memory. Once it starts, nothing stops it: ProvSQL 1.12 ignores "
         "`statement_timeout` and `pg_terminate_backend` while evaluating, so the run ends "
         "when the OOM killer takes the database backend down, with every session on it, or "
-        "when the database is restarted.")
+        "when the database is restarted. ProvSQL 1.13 honours cancellation, refuses the "
+        "first shape past a limit and stops at the memory budget it is given. Both shapes stay "
+        "exponential; the comparison of 20 readings takes about half the memory it did (see "
+        "*ProvSQL 1.13*).")
 
     _render_memory_setup()
 
@@ -639,6 +660,391 @@ def _render_memory_analysis() -> None:
         _risk_table(unsupported, sweep)
 
 
+_OUTCOME_LABEL = {
+    "ok": "✅ Explained",
+    "empty": "⚪ Runs, empty answer",
+    "wrong": "⚠️ Not the SQL answer",
+    "limit": "⛔ Refused: world limit",
+    "refused": "❌ Refused",
+    "error": "❌ Fails",
+    "timeout": "⌛ Stopped at 120 s",
+    "killed": "🔴 Out of memory (3 GB)",
+}
+_RUN_LABEL = {RUN_CURRENT: "ProvSQL 1.12", RUN_NEXT: "ProvSQL 1.13, as sent today",
+              RUN_NEXT_ADAPTED: "ProvSQL 1.13, adapted"}
+_LOWEST_POINT_EXAMPLE = """SELECT elevation FROM pts
+WHERE elevation = (SELECT MIN(elevation) FROM pts)
+LIMIT 1"""
+_ADAPTED_EXAMPLE = """SELECT y.*, sr_formula(provenance(), 'formula_mapping')
+FROM (
+  SELECT tmin - 273.15 AS celsius, latitude, longitude
+  FROM meteo_tmin WHERE ...
+  ORDER BY tmin
+  LIMIT plain(10)                   -- was LIMIT 10
+) AS y
+WHERE present(provenance())         -- only the rows of the SQL answer"""
+
+
+def _cost(run: dict) -> str:
+    """Time and peak memory of a run; one under 0.1 s ends before the first memory sample."""
+    memory = f", {format_mb(run['peak_backend_mb'])}" if run["peak_backend_mb"] else ""
+    return f"{run['seconds']} s{memory}"
+
+
+def _outcome_cell(run: dict | None, cost: bool = False) -> str:
+    """Outcome of one query of the comparison, with its cost if asked."""
+    if not run:
+        return "—"
+    outcome = run_outcome(run)
+    text = _OUTCOME_LABEL[outcome]
+    if outcome == "wrong":
+        text += f": {run['rows']} row(s), SQL gives {run['plain_rows']}"
+    if cost and outcome in ("ok", "empty", "wrong"):
+        text += f" · {_cost(run)}"
+    return text
+
+
+def _outcome_counts(runs: list[dict]) -> str:
+    counts = Counter(run_outcome(r) for r in runs)
+    return " · ".join(f"{counts[o]} {label}" for o, label in _OUTCOME_LABEL.items() if counts[o])
+
+
+def _check_cell(run: dict | None) -> str:
+    """Outcome of one run-time check."""
+    if not run:
+        return "—"
+    if run["check"] == "lowest_point" and run["status"] == "success":
+        right = run["answer"] == run["plain_answer"]
+        return (f"{'✅' if right else '⚠️'} returns {run['answer']} m"
+                + ("" if right else f", SQL gives {run['plain_answer']} m"))
+    if run["status"] == "success":
+        return f"✅ {_cost(run)}"
+    if run["status"] == "timeout":
+        return f"⌛ cancelled after {run['seconds']} s"
+    if was_killed(run):
+        return f"🔴 killed at {format_mb(run['peak_backend_mb'])} after {run['seconds']} s"
+    if run["sqlstate"] in ("54000", "0A000"):
+        return f"⛔ refused in {run['seconds']} s: {run['error'][:80]}"
+    return f"❌ fails: {run['error'][:80]}"
+
+
+def _curve_cell(c: dict | None) -> str:
+    if not c:
+        return "—"
+    if c["status"] == "ok":
+        return f"{_peak(c)}, {c['seconds']} s"
+    return "🔴 killed (3 GB)" if c["status"] == "killed" else f"⛔ refused in {c['seconds']} s"
+
+
+_SERVICE_OUTCOME_LABEL = {
+    "ok": "✅ SQL answer", "empty": "⚪ empty on the demo's data", "wrong": "❌ not the SQL answer",
+    "apx": "⛔ refused by ap-explanation", "refused": "⛔ refused by ProvSQL", "limit": "🔢 world limit",
+    "error": "💥 error", "stopped": "🛑 stopped by provsql.max_memory", "disk": "💽 stopped by temp_file_limit (3 GB)", "timeout": "⏱️ not finished",
+    "killed": "🧨 database killed (3 GB)", "unchecked": "❔ plain SQL answer not computed",
+}
+
+
+def _render_service_check() -> None:
+    """The questions sent to ap-explanation itself, unchanged, on ProvSQL 1.12 and 1.13."""
+    questions = {q["question_id"]: q for q in load_question_set()}
+    runs = {v: load_service_runs(v) for v in ("1.12", "1.13", "1.13 patched", "1.12 patched")}
+    zurich = sorted(runs["1.13"], key=int)
+    supported = [q for q in zurich if questions[q]["supported"] == "true"]
+    outcome = {v: {q: service_outcome(r) for q, r in runs[v].items()} for v in runs}
+    outcome_patched = outcome["1.13 patched"]
+
+    st.subheader("Through ap-explanation itself")
+    st.markdown(
+        f"The runs above go through `scripts/provsql_compare.py`, which applies "
+        f"ap-explanation's rewriter itself. To see what the demo would get, the City of "
+        f"Zurich question of every template ({len(zurich)}, {len(supported)} of them "
+        f"supported) was also sent to **ap-explanation v1.2.0, unchanged**, which annotates "
+        f"the tables and asks for every semiring (`scripts/apx_service_check.py`), stopped "
+        f"after {SERVICE_DEADLINE_SECONDS} s, on ProvSQL 1.12 and 1.13, and to ap-explanation "
+        f"**patched** for ProvSQL 1.13 (branch `{APX_PATCH_BRANCH}`, below).")
+    labels = list(_SERVICE_OUTCOME_LABEL)
+    for title, ids in (("Supported by ap-explanation", supported),
+                       ("Not supported by ap-explanation", [q for q in zurich if q not in supported])):
+        counts = [Counter(outcome["1.12"][q] for q in ids), Counter(outcome["1.13"][q] for q in ids),
+                  Counter(outcome_patched.get(q, "") for q in ids)]
+        st.markdown(f"**{title}** ({len(ids)} templates)")
+        st.dataframe(
+            [{"Outcome": _SERVICE_OUTCOME_LABEL[o], "ProvSQL 1.12, as is": c12[o] or None,
+              "ProvSQL 1.13, as is": c13[o] or None, "ProvSQL 1.13, patched": ca[o] or None}
+             for o in labels for c12, c13, ca in [counts] if any(c[o] for c in counts)],
+            width="stretch", hide_index=True)
+    regressed = [q for q in supported if outcome["1.12"][q] == "ok" and outcome["1.13"][q] != "ok"]
+    fixed = [q for q in regressed if outcome_patched.get(q) == "ok"]
+    working = [q for q in supported if outcome["1.12"][q] == "ok"]
+    kept = [q for q in working if outcome_patched.get(q) == "ok"]
+    same_on_112 = sum(outcome["1.12 patched"].get(q) == outcome["1.12"][q] for q in outcome["1.12 patched"])
+    wrong_before = [q for q in supported if outcome["1.12"][q] == "wrong"]
+    by_kind = Counter(outcome["1.13"][q] for q in regressed)
+    st.markdown(
+        f"- **ProvSQL 1.13 breaks {len(regressed)} of the supported templates ap-explanation "
+        f"answers on ProvSQL 1.12**, as it is: "
+        + ", ".join(f"{n} {_SERVICE_OUTCOME_LABEL[o].split(' ', 1)[1]}" for o, n in by_kind.most_common())
+        + ". They are the `ORDER BY … LIMIT k` and the comparisons with a subquery, which "
+        f"ProvSQL 1.13 reads in every possible world. **Patched, {len(fixed)} of them return "
+        f"the SQL answer again**: {len(kept)} of the {len(working)} supported templates that "
+        f"work on ProvSQL 1.12 work on ProvSQL 1.13"
+        + (f" (on ProvSQL 1.12, the patch leaves {same_on_112} of {len(outcome['1.12 patched'])} "
+           f"outcomes unchanged)" if outcome["1.12 patched"] else "") + ".\n"
+        f"- **{len(wrong_before)} supported templates do not return the SQL answer on ProvSQL "
+        f"1.12** ({', '.join(questions[q]['category'] + questions[q]['template_index'] for q in wrong_before)}): "
+        f"arithmetic on aggregates (a percentage, an anomaly) gives another value, 100 % read "
+        f"as 10⁻¹², for one. ProvSQL 1.13 computes them right. The *Summary - ProvSQL 1.12* tab "
+        f"counts them as not supported.\n"
+        f"- **Annotating a large table outlasts ap-explanation's lock**: on the 41 million "
+        f"elevation points of the memory runs below, the annotation took an hour and finished, "
+        f"but the service reported a failure (*Cannot release a lock that's no longer owned*).")
+
+    memory = load_service_memory_runs()
+    if memory:
+        kinds = Counter(service_outcome(r) for r in memory.values())
+        killers = Counter(lost.split(",")[0] for r in memory.values() for lost in r["lost"])
+        st.markdown(
+            f"**With `provsql.max_memory = '1GB'`**, on the {len(memory)} questions that may "
+            f"exhaust memory, each on the demo's data copied to every cell of its region: "
+            + ", ".join(f"{n} {_SERVICE_OUTCOME_LABEL[o].split(' ', 1)[1]}" for o, n in kinds.most_common())
+            + ". The processes the kernel killed: "
+            + (", ".join(f"{who} ({n})" for who, n in killers.most_common()) or "none")
+            + ". The budget covers the query's backend only: ProvSQL's circuit store "
+              "(`ProvSQL MMap` worker) and PostgreSQL's parallel workers grow outside it, and "
+              "the backend itself can pass it between two checks.")
+        patched = load_service_memory_runs(patched=True)
+        if patched:
+            kinds = Counter(service_outcome(r) for r in patched.values())
+            st.markdown(
+                f"Sent to ap-explanation patched, the {len(patched)} of them it does not support "
+                "as it is (33 for their `HAVING`), on the readings of their region: "
+                + ", ".join(f"{n} {_SERVICE_OUTCOME_LABEL[o].split(' ', 1)[1]}" for o, n in kinds.most_common())
+                + ": `provsql.max_worlds` refuses their comparisons on aggregates before memory "
+                  "becomes a problem.")
+
+
+def _render_provsql_next() -> None:
+    """What ProvSQL 1.13 changes for the meteo questions, measured on its master branch."""
+    sweep = load_provsql_sweep()
+    checks = load_provsql_checks()
+    questions = {q["question_id"]: q for q in load_question_set()}
+    demo_ids = [p["id"] for p in _PRESETS]
+    budgeted = load_provsql_sweep_max_memory()
+    budget_check = checks["top_k_max_memory"]["1.13"]
+    stopped = [q for q, r in budgeted.items() if "provsql.max_memory" in r["error"]]
+    template_ids = [q for q in sweep[RUN_CURRENT] if q in questions]
+    n = len(template_ids)
+    per_template = len(questions) - sum(q["supported"] == "true" for q in questions.values())
+
+    st.markdown(
+        f"The demo runs **ProvSQL 1.12**. ProvSQL **1.13** is not released yet; its "
+        f"development branch ({PROVSQL_NEXT_BUILD}) was built on the demo's database image and "
+        f"given the same queries. It lifts most of the refusals behind the unsupported "
+        f"questions, and stops instead of exhausting memory, **but only once ap-explanation "
+        f"changes the queries it sends**: sent as they are today, three of the six demo "
+        f"questions stop working.")
+
+    st.subheader("How it was measured")
+    st.markdown(
+        f"The **{n}** City of Zurich questions that ProvSQL 1.12 does not support, one per "
+        f"unsupported template (the {per_template} unsupported questions are these templates "
+        f"asked of four regions), and the six demo questions, each run three times by "
+        f"`scripts/provsql_compare.py`:\n"
+        f"- **{_RUN_LABEL[RUN_CURRENT]}**, the query ap-explanation's rewriter produces;\n"
+        f"- **{_RUN_LABEL[RUN_NEXT]}**, the same query;\n"
+        f"- **{_RUN_LABEL[RUN_NEXT_ADAPTED]}**, with every `LIMIT k` written `LIMIT plain(k)` "
+        f"and the rows filtered by `present(provenance())` (see *What ap-explanation has to "
+        f"change*).\n\n"
+        f"ap-explanation's own refusals (`HAVING`, aggregates outside its list) are lifted, to "
+        f"see what ProvSQL does with the query. Each query runs with the `formula` semiring, in "
+        f"a database of its own capped at 3 GB, annotated as ap-explanation annotates it, and "
+        f"is stopped after 120 s. **Explained** means it ran and returned the rows plain SQL "
+        f"returns.")
+
+    counts = {run: Counter(run_outcome(sweep[run][q]) for q in template_ids) for run in _RUN_LABEL}
+    columns = st.columns(3)
+    for col, run in zip(columns, _RUN_LABEL):
+        col.metric(f"Explained on {_RUN_LABEL[run]}", f"{counts[run]['ok']} of {n} templates",
+                   help="Templates whose City of Zurich question ran and returned the plain SQL "
+                        "answer, with at least one row.")
+    empty = counts[RUN_NEXT_ADAPTED]["empty"]
+    if empty:
+        st.caption(
+            f"{empty} more templates run on ProvSQL 1.13 with an empty answer on the demo's data "
+            "(years or tables it lacks), so their provenance was not seen.")
+
+    st.subheader("The unsupported questions, by reason")
+    by_reason: dict[str, list[str]] = {}
+    for q in template_ids:
+        by_reason.setdefault(unsupported_reason(questions[q]["reason"])[0], []).append(q)
+    st.dataframe(
+        [{"Reason on ProvSQL 1.12": name, "Templates": len(ids),
+          **{_RUN_LABEL[run]: _outcome_counts([sweep[run][q] for q in ids]) for run in _RUN_LABEL}}
+         for name, ids in sorted(by_reason.items(), key=lambda item: -len(item[1]))],
+        width="stretch", hide_index=True)
+    st.markdown(
+        "- **`ORDER BY` on an aggregate, `HAVING`, window functions**: ProvSQL 1.13 runs them, "
+        "but for one `ORDER BY` template. A `LAG` value itself stays outside the provenance, "
+        "with a warning.\n"
+        "- **Scalar subquery reading a CTE**: accepted, but the *lowest / highest point* "
+        "questions (`elevation = (SELECT min_elev …) LIMIT 1`) do not return the SQL answer, "
+        "see *Still open*.\n"
+        "- **Subquery in a condition**: accepted, then refused by the world limit or not "
+        "finished in 120 s: `tmin = (SELECT MIN(tmin) …)` over a month is a comparison on an "
+        "aggregate of 31 readings.\n"
+        "- **`PERCENTILE_CONT`, `REGR_SLOPE`, `CORR`**: still not explained.\n"
+        "- **`COUNT(DISTINCT …)` on an empty table**: fixed, see *Run-time problems*.")
+    with st.expander(f"The {n} templates, one by one"):
+        st.dataframe(
+            [{"Id": int(q), "Question": questions[q]["question"],
+              "Reason on ProvSQL 1.12": unsupported_reason(questions[q]["reason"])[0],
+              **{_RUN_LABEL[run]: _outcome_cell(sweep[run][q]) for run in _RUN_LABEL},
+              "Detail (1.13, adapted)": sweep[RUN_NEXT_ADAPTED][q]["error"]
+              or "; ".join(sweep[RUN_NEXT_ADAPTED][q]["warnings"])}
+             for q in template_ids],
+            width="stretch", hide_index=True,
+            column_config={"Id": st.column_config.NumberColumn(width="small", format="%d")})
+        st.caption(
+            "On ProvSQL 1.12 a few templates ap-explanation refuses do run once its refusal is "
+            "lifted, some with another answer than plain SQL. *Detail* is ProvSQL's error, or "
+            "its warnings about the parts of the query it leaves out of the provenance.")
+
+    st.subheader("The six demo questions")
+    st.dataframe(
+        [{"Question": f"{p['id']} · {p['question']}",
+          **{_RUN_LABEL[run]: _outcome_cell(sweep[run].get(p["id"]), cost=True) for run in _RUN_LABEL}}
+         for p in _PRESETS if p["id"] in demo_ids],
+        width="stretch", hide_index=True)
+    st.markdown(
+        "ProvSQL 1.13 reads `ORDER BY … LIMIT k` **in every possible world**: the result holds "
+        "every row that may be among the first *k*, each with the condition for it to be. That "
+        "condition involves all the other rows, so G81's ten lowest of 31 readings gives a "
+        "formula of over 1 GB, which ProvSQL 1.13 now refuses (the first build measured ran "
+        "out of memory at 3 GB), and C155 and T157, which rank readings joined to the "
+        "elevation points, do not finish. `LIMIT plain(k)` asks for the truncation of the actual result, as "
+        "ProvSQL 1.12 did. There is no setting for it.")
+
+    _render_service_check()
+
+    st.subheader("What ap-explanation has to change")
+    col_text, col_code = st.columns(2)
+    with col_text:
+        st.markdown(
+            "1. **Write every `LIMIT k` as `LIMIT plain(k)`**, or the query is ranked in every "
+            "possible world (above).\n"
+            "2. **Keep the rows where `present(provenance())`**. ProvSQL 1.13 can return rows "
+            "that are not in the SQL answer, each with the condition under which it would be: "
+            "a group failing its `HAVING`, a row failing a comparison with a subquery.\n"
+            "3. **Stop refusing `HAVING`** in its rewriter.\n"
+            "4. **Match errors on their new form**: a refusal is now SQLSTATE `0A000` instead "
+            "of `XX000`, with its cause on a `DETAIL` line (`provsql-reason: …`), so the error "
+            "texts the classification of this demo relies on change.")
+        st.markdown(
+            f"1 to 3 are done on ap-explanation's branch `{APX_PATCH_BRANCH}`, only when the "
+            "database runs ProvSQL 1.13 or later (the repository reads the installed version): "
+            "see *Through ap-explanation itself* for what it changes.")
+        st.caption(
+            "A database annotated under ProvSQL 1.12 keeps working after "
+            "`ALTER EXTENSION provsql UPDATE`, which the database image runs at start.")
+    with col_code:
+        st.code(_ADAPTED_EXAMPLE, language="sql")
+        st.caption("G81 as the *adapted* run sends it.")
+
+    st.subheader("Run-time problems")
+    st.dataframe(
+        [{"Check": runs[next(iter(runs))]["what"],
+          "ProvSQL 1.12": _check_cell(runs.get("1.12")), "ProvSQL 1.13": _check_cell(runs.get("1.13"))}
+         for runs in checks.values()],
+        width="stretch", hide_index=True)
+    st.markdown(
+        "- **A comparison on an aggregate no longer takes the database down.** ProvSQL 1.13 "
+        "refuses it once the group has more than `provsql.max_worlds` possible worlds (2²⁰ by "
+        "default, that is 20 readings). Under that it costs what it did: memory still grows "
+        "exponentially with the group (table below), so Q295 gets an error instead of an "
+        "answer.\n"
+        "- **Cancellation works**: `statement_timeout` and a cancel now stop an evaluation.\n"
+        "- **Aggregates over many rows cost the same**, and the join with the elevation points "
+        "fits in the 3 GB limit, as it does on ProvSQL 1.12. The first 1.13 build measured "
+        "went past the limit on it.\n"
+        f"- **`provsql.max_memory`**, the new memory budget, now stops the top-10 of 31 "
+        f"readings: set to 1 GB it ends the evaluation at {format_mb(budget_check['peak_backend_mb'])}, "
+        f"where the backend was killed at 3 GB without it. On the first build measured neither "
+        f"`provsql.max_memory` nor `max_worlds` stopped it; it was fixed after being reported "
+        f"as [provsql#104](https://github.com/PierreSenellart/provsql/issues/104). A text "
+        f"result over 1 GB, the most PostgreSQL holds, is now refused with error 54000 "
+        f"instead of an internal error. Over the {len(budgeted)} questions, a 1 GB budget "
+        f"killed {sum(map(was_killed, budgeted.values()))} backends and stopped "
+        f"{len(stopped)} evaluation{'s' if len(stopped) != 1 else ''} "
+        f"({', '.join(stopped) or 'none'}). It stays approximate, see *Still open*.")
+    current = {(c["semiring"], c["values"], int(c["readings"])): c for c in load_memory_group_size()}
+    upcoming = {(c["semiring"], c["values"], int(c["readings"])): c for c in load_memory_group_size_next()}
+    sizes = sorted({k[2] for k in (*current, *upcoming) if k[:2] == ("formula", "wet") and k[2] >= 16})
+    st.dataframe(
+        [{"Readings in the compared group": size,
+          "ProvSQL 1.12": _curve_cell(current.get(("formula", "wet", size))),
+          "ProvSQL 1.13": _curve_cell(upcoming.get(("formula", "wet", size)))}
+         for size in sizes],
+        width="stretch", hide_index=True)
+    st.caption(
+        "`formula` semiring, `SUM(v) > 0.001` over a group of n readings, 3 GB limit "
+        "(`scripts/memtest_group_size.sh`); *< 0.3 s* means the run ended before the first "
+        "memory sample. `why`, `how` and `which` are refused at the same size; `boolexpr` and "
+        "the probability stay small, as on ProvSQL 1.12.")
+
+    st.subheader("Still open on ProvSQL 1.13")
+    lowest = checks.get("lowest_point", {})
+    runs_next = (sweep[RUN_NEXT], sweep[RUN_NEXT_ADAPTED])
+    largest = max((r for run in runs_next for r in run.values()), key=lambda r: r["store_growth_mb"])
+    store_lost = [lost for run in runs_next for lost in [run[largest["question_id"]]["lost"]]]
+    over_budget = max((r for r in budgeted.values() if r["status"] == "success"),
+                      key=lambda r: r["peak_backend_mb"])
+    col_bug, col_rest = st.columns(2)
+    with col_bug:
+        st.markdown("#### A row that is not the SQL answer")
+        st.code(_LOWEST_POINT_EXAMPLE, language="sql")
+        st.markdown(
+            "Over the 8 lowest elevation points of the cell, stored highest first, plain SQL "
+            f"returns **{lowest['1.13']['plain_answer']} m**, ProvSQL 1.13 "
+            f"**{lowest['1.13']['answer']} m** and ProvSQL 1.12 **{lowest['1.12']['answer']} m**. "
+            "The comparison keeps every point, each with the condition for it to be the "
+            "lowest, and a `LIMIT` without `ORDER BY` then takes one of them, whether it is "
+            "the lowest or not; `LIMIT plain(1)` does the same. ProvSQL 1.12 never got that "
+            "far on the *lowest / highest point* templates, which reach the comparison "
+            "through CTEs it loses. ProvSQL 1.13 runs them: as sent today they return another "
+            "point, and filtered by `present(provenance())` no row at all.")
+    with col_rest:
+        st.markdown("#### Memory")
+        st.markdown(
+            "- **`provsql.max_memory` is a best-effort limit**, checked in the evaluation "
+            "loops, every 50 ms and after each large formula, not while the possible worlds of "
+            "a comparison are listed: with `provsql.max_worlds = 0`, the months of 2019 "
+            "(28 to 31 readings) are still killed at 3 GB under a 1 GB budget"
+            f", and question {over_budget['question_id']} runs to the end at "
+            f"{format_mb(over_budget['peak_backend_mb'])} under the same budget.\n"
+            "- **The circuit store grows with every query, and a stopped query leaves its "
+            f"part behind.** Question {largest['question_id']} alone added "
+            f"{format_mb(largest['store_growth_mb'])} to it"
+            + (", and the kernel killed ProvSQL's store worker" if any(
+                "background worker" in lost for lost_run in store_lost for lost in lost_run) else "")
+            + ". The store is shared by the whole database: once it outgrows the memory, "
+            "every provenance query on that database fails. ProvSQL 1.12 has the same store, "
+            "but refused the queries that grow it this much.\n"
+            "- **Comparisons on an aggregate stay exponential**; the world limit only makes "
+            "them fail early.")
+
+    st.subheader("What was not measured")
+    st.markdown(
+        "- **The other regions.** Only the City of Zurich question of each template ran. Regions "
+        "of several cells have larger groups, so more of their comparisons on an aggregate "
+        "(`HAVING` included) will meet the world limit.\n"
+        "- **The supported questions**, apart from the six of the demo: any of them with an "
+        "`ORDER BY … LIMIT` needs `LIMIT plain(k)`.\n"
+        "- **Tables the demo's data lacks**: `meteo_tmean`, `meteo_sdmax`, `meteo_ssrd` and the "
+        "land cover tables are stand-ins derived from the readings at hand "
+        "(`scripts/provsql_compare_setup.sql`), enough to run the queries.\n"
+        "- **The other semirings**, apart from the comparison on an aggregate above.")
+
+
 # Row colours of the Summary, readable in light and dark themes (dark text on a light fill).
 _STATUS_STYLE = {
     STATUS_OK: "background-color: #d3f0d6; color: #10361a",
@@ -648,31 +1054,58 @@ _STATUS_STYLE = {
 _STATUS_ICON_BY = {STATUS_OK: "🟢", STATUS_MEMORY: "🟡", STATUS_UNSUPPORTED: "🔴"}
 
 
-def _render_question_summary() -> None:
-    """Every question of the set, coloured by whether it can be explained."""
-    rows = question_statuses()
-    counts = Counter(r["Status"] for r in rows)
+def _status_metrics(rows: list[dict], key: str = "Status", label: str = "") -> None:
+    counts, total = Counter(r[key] for r in rows), len(rows)
+    for col, status in zip(st.columns(3), (STATUS_OK, STATUS_MEMORY, STATUS_UNSUPPORTED)):
+        col.metric(f"{label}{_STATUS_ICON_BY[status]} {status}", f"{counts[status]} ({counts[status] / total:.0%})")
+
+
+def _render_question_summary(next_version: bool = False) -> None:
+    """Every question of the set, coloured by whether it can be explained, on ProvSQL 1.12
+    (the demo) or, with *next_version*, on ProvSQL 1.13 through ap-explanation as it is."""
+    if next_version:
+        rows = question_statuses_next()
+    else:
+        on_next = {r["Id"]: f"{_STATUS_ICON_BY[r['Status']]} {r['Status']}" for r in question_statuses_next()}
+        rows = [r | {"With ProvSQL 1.13": on_next[r["Id"]]} for r in question_statuses()]
     total = len(rows)
 
     st.markdown(
         f"The **{total}** questions of the meteo question set, and whether ap-explanation can "
         "explain them: 🟢 **runs** without issue, 🟡 **may exhaust memory** (estimated above "
         "the 3 GB limit, see *Memory analysis*), 🔴 **not supported** (rejected, see "
-        "*Theoretically supported questions*, or failing at run time).")
-    c_ok, c_mem, c_ko = st.columns(3)
-    for col, status in ((c_ok, STATUS_OK), (c_mem, STATUS_MEMORY), (c_ko, STATUS_UNSUPPORTED)):
-        col.metric(f"{_STATUS_ICON_BY[status]} {status}",
-                   f"{counts[status]} ({counts[status] / total:.0%})")
+        "*Theoretically supported questions*, or failing at run time)."
+        + (f" This tab is the same table on **ProvSQL 1.13** ({PROVSQL_NEXT_BUILD}), measured "
+           "**through ap-explanation v1.2.0 itself, unchanged**: the service annotates the "
+           "tables and asks for every semiring, as the demo does."
+           if next_version else ""))
+    if next_version:
+        _status_metrics(rows, label="As is: ")
+        _status_metrics(rows, key="Patched", label="Patched: ")
+        st.caption(
+            "*As is*: ap-explanation v1.2.0 as deployed. *Patched*: its rewriter adapted to "
+            f"ProvSQL 1.13 (branch `{APX_PATCH_BRANCH}`): every `LIMIT k` sent as "
+            "`LIMIT plain(k)`, the rows kept where `present(provenance())`, `HAVING` no longer "
+            "refused; unchanged before ProvSQL 1.13 (see *ProvSQL 1.13*).")
+        blocked = Counter((r["Blocked by"], r["Fix"]) for r in rows if r["Status"] != STATUS_OK)
+        st.markdown("**What the 🟡 and 🔴 questions are blocked by**, and what would remove it:")
+        st.dataframe(pd.DataFrame([{"Blocked by": b or "—", "Fix": f or "—", "Questions": n}
+                                   for (b, f), n in blocked.most_common()]),
+                     width="stretch", hide_index=True)
+    else:
+        _status_metrics(rows)
 
     shown = st.multiselect(
         "Show", [STATUS_OK, STATUS_MEMORY, STATUS_UNSUPPORTED],
         default=[STATUS_OK, STATUS_MEMORY,
-                 STATUS_UNSUPPORTED], key="summary_status",
+                 STATUS_UNSUPPORTED], key="summary_status_next" if next_version else "summary_status",
         format_func=lambda s: f"{_STATUS_ICON_BY[s]} {s}")
-    columns = ["Id", "Status", "Question", "Why", "Estimated memory", "Measured (3 GB cap)",
-               "Category", "Tables"]
-    table = pd.DataFrame(
-        [r for r in rows if r["Status"] in shown], columns=columns)
+    columns = (["Id", "Status", "Question", "Why", "Patched", "Blocked by", "Fix", "On ProvSQL 1.12",
+                "Measured on", "Measured (3 GB cap)", "Estimated memory", "Category", "Tables"]
+               if next_version else
+               ["Id", "Status", "Question", "Why", "With ProvSQL 1.13", "Estimated memory",
+                "Measured (3 GB cap)", "Category", "Tables"])
+    table = pd.DataFrame([r for r in rows if r["Status"] in shown], columns=columns)
     if table.empty:
         st.info("No question with the selected status.")
         return
@@ -687,27 +1120,52 @@ def _render_question_summary() -> None:
             "Question": st.column_config.TextColumn(width="large"),
             "Why": st.column_config.TextColumn(width="large"),
         })
+    if next_version:
+        st.caption(
+            "Each template was run on its City of Zurich question (the demo's data covers that "
+            "cell only), and the other regions of the template are given its outcome: their "
+            "SQL differs only by the region. The questions that may exhaust memory were run "
+            "themselves, on the demo's data copied to every cell of their region (what the "
+            "memory estimates assume), with `provsql.max_memory = '1GB'` set on the database: "
+            "the service does not set it, and it is unlimited by default. A question that runs "
+            "with an empty answer on the demo's data keeps its ProvSQL 1.12 status: 🟢 if it "
+            "ran there, 🔴 otherwise (its provenance was not seen). *Measured on* is the "
+            "question run, *Measured* its peak backend memory, outcome and time "
+            f"({SERVICE_DEADLINE_SECONDS} s at most). Runs from `scripts/apx_service_check.py`, "
+            "with ap-explanation as is and patched.")
     st.caption(
         "🟢 also covers the questions estimated between 100 MB and 3 GB: they complete within "
         "the limit, and their estimate is in the *Estimated memory* column. Estimates come "
         "from the SQL (`scripts/memory_analysis.py`); *Measured* gives the actual peak where "
         "the question was run on the demo's data. A run-time failure measured on one question "
         "is applied to the other regions of the same template, whose SQL differs only by the "
-        "region. Sort or search the table from its header and toolbar.")
+        "region."
+        + ("" if next_version else
+           " A template whose City of Zurich question, sent to ap-explanation, does not "
+           "return the plain SQL answer is 🔴. *With ProvSQL 1.13* is the question's status "
+           "on ProvSQL 1.13 with ap-explanation as it is (see the next tab).")
+        + " Sort or search the table from its header and toolbar.")
 
 
-tab_summary, tab_supported, tab_memory, tab_runner = st.tabs(
-    ["📋 Summary", "📊 Theoretically supported questions", "🧠 Memory analysis",
-     "🔎 Demo query runner"])
+tab_summary, tab_summary_next, tab_supported, tab_memory, tab_next, tab_runner = st.tabs(
+    ["📋 Summary - ProvSQL 1.12", f"📋 Summary - ProvSQL 1.13 (master at {PROVSQL_NEXT_COMMIT})",
+     "📊 Theoretically supported questions", "🧠 Memory analysis",
+     "🆕 ProvSQL 1.13", "🔎 Demo query runner"])
 
 with tab_summary:
     _render_question_summary()
+
+with tab_summary_next:
+    _render_question_summary(next_version=True)
 
 with tab_supported:
     _render_summary()
 
 with tab_memory:
     _render_memory_analysis()
+
+with tab_next:
+    _render_provsql_next()
 
 with tab_runner:
     st.caption(
