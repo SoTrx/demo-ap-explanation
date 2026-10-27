@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Changed
+
+- **Summary - ProvSQL 1.14 - master@3b8d3098 tab** — the City of Zurich questions and the 46 Attica ones that need regional data, run on ProvSQL master 3b8d3098 through ap-explanation `feat/formula-rows` (pre-check and `sr_formula_rows`): 509 / 124 / 10 / 109, with no crash among them; the 10 🟠 are Bern and Peloponnese questions measured on 1.13.0 only. Questions refused by ap-explanation's pre-check (`max_aggregated_rows`, or plain SQL past 60 s) count as 🟡, and a run on this build replaces an older one or an estimate.
+- **`scripts/apx_service_check.py`** — `prepare … --regions=<region>` copies the data to one region's cells only (Attica: 24), and each run records `formula_digest`, a digest of its formulas that does not depend on the snapshot (`FORMULA_SAMPLE=1` prints them), to compare the provenance of two runs.
+- **Runs past statement_timeout** — a question whose statement goes on after `statement_timeout` (the measurement gave up) is a 🟠 runtime crash, not a timeout: nothing stopped it.
+
+- **Four colours in both summaries** — 🟢 *Supported*; 🟡 *Stopped due to a lack of memory* (ProvSQL stops the query cleanly with `provsql.max_memory` or `temp_file_limit`); 🟠 *Crashed by a lack of memory* (it exhausts the memory and nothing stops it: the kernel kills a ProvSQL process, it should have been stopped); 🔴 *Not supported*, which includes queries still computing after 180 s. ProvSQL 1.13: 569, 4, 25, 154 (the 36 former "may exhaust memory" were 17 crashes, 15 not finished, 4 stopped). ProvSQL 1.12 has no memory limit, so every question estimated to exhaust memory is orange (one measured: 532, killed at 3 GB; the others estimated): 462, 0, 46, 244.
+
+- **Disk tab: one mapping table** — ap-explanation builds one mapping table per annotated table, shared by every semiring, instead of five (about 0.6× the table instead of 3×).
+
+- **Summary - ProvSQL 1.13 re-measured on the released 1.13.0** (it fixes the `MAX(date) - MIN(date)` failure and makes `provsql.max_memory` stop the backend while it builds a circuit): 569 questions run, 36 may exhaust memory, 147 are not supported (was 567, 37 and 148 on master `45320ea7`). No question is blocked by a ProvSQL bug any more. The City of Zurich questions ran with ProvSQL's defaults and the regional ones with `provsql.max_memory = '1GB'`. Still open in 1.13.0: with `provsql.max_worlds = 0` the budget is not checked while listing possible worlds, and a large aggregate can take down the `ProvSQL MMap` store worker.
+
+- **Simpler dashboard** — five tabs: *Summary - ProvSQL 1.12*, *Summary - ProvSQL 1.13*, *Memory*, *Disk* and the query runner. The 1.13 summary is now measured through ap-explanation master (`a6cf3ea`, adapted to ProvSQL 1.13): 567 questions run, 37 may exhaust memory, 148 are not supported, each with what blocks it. *Memory* lists the questions that may exhaust memory, the two problems behind them and where `provsql.max_memory` does not hold; *Disk* what the annotation, ProvSQL's circuit store and temporary files write. The *Theoretically supported questions*, *Memory analysis* and *ProvSQL 1.13* tabs are removed, with the assets only they read.
+
 ### New Features
 
 - **Summary - ProvSQL 1.13 tab** — the Summary table (renamed *Summary - ProvSQL 1.12*) on ProvSQL 1.13 (master at `45320ea7`), measured through ap-explanation itself: as is (v1.2.0), 440 questions run, 64 may exhaust memory, 248 are not supported; patched for ProvSQL 1.13 (branch `feat/provsql-1.13-possible-worlds`), 564, 48 and 140. Each question says what blocks it (ProvSQL, ap-explanation, a ProvSQL bug, its own SQL, the demo's data) and what would remove it. The questions that may exhaust memory were run on the demo's data copied to their region, with `provsql.max_memory = '1GB'`.

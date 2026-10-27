@@ -17,9 +17,11 @@ Setup, one snapshot per ProvSQL version (images as in scripts/provsql_compare.py
     python3 scripts/apx_service_check.py prepare provsql:master-fix apx-regions:1.13 --regions
     # the readings only (the elevation points stay those of the City of Zurich cell), 6 times smaller
     python3 scripts/apx_service_check.py prepare provsql:master-fix apx-regions-readings:1.13 --regions=readings
+    # one region only: its 24 cells for Attica
+    python3 scripts/apx_service_check.py prepare provsql:master-fix apx-attica:1.14 --regions=Attica
 
 Usage:
-    python3 scripts/apx_service_check.py run apx-meteo:1.13 1.13 zurich > assets/apx_service_113.jsonl
+    APX_IMAGE=ap-explanation:master python3 scripts/apx_service_check.py run apx-meteo:1.13 1.13 zurich > assets/apx_service_113_master.jsonl
     python3 scripts/apx_service_check.py run apx-regions:1.13 1.13 <ids> --max-memory=1GB --set=temp_file_limit=3GB --reuse
     python3 scripts/apx_service_check.py run apx-meteo:1.13 1.13 532 536
 
@@ -31,6 +33,7 @@ run several shards at once, each with its own database, Redis and service. ``--r
 one database for every question (see :data:`_RESTORE_STORE`), as the --regions snapshot needs.
 """
 import csv
+import hashlib
 import json
 import os
 import re
@@ -49,14 +52,22 @@ ROOT = Path(__file__).parent.parent
 QUESTIONS = ROOT / "assets" / "meteo_queries.csv"
 APX_IMAGE = os.environ.get("APX_IMAGE", "ghcr.io/datagems-eosc/datagems-eosc/ap-explanation:v1.2.0")
 WORKER = os.environ.get("WORKER", "0")
+APX_ENV = os.environ.get("APX_ENV", "")  # NAME=value settings of the service, space separated
 NETWORK, DB, REDIS, APX = (f"apxcheck{WORKER}", f"apxcheck-db{WORKER}", f"apxcheck-redis{WORKER}",
                            f"apxcheck-apx{WORKER}")
-DEADLINE_SECONDS = 180
-PLAIN_TIMEOUT_SECONDS = 300
+DEADLINE_SECONDS = int(os.environ.get("DEADLINE_SECONDS", "180"))  # how long the service may take to answer
+# A host directory to keep the database in instead of an image (DB_MOUNT): the --regions
+# snapshot is 70 GB, and committing it needs as much again. Then `prepare` leaves the data
+# there (its tag is the base image to run it with) and `run --reuse` starts from it.
+DB_MOUNT = os.environ.get("DB_MOUNT", "")
+DB_MEMORY = os.environ.get("DB_MEMORY", "3g")  # the RAM cap of the database container
+DB_CPUS = os.environ.get("DB_CPUS", "")  # its CPU cap (docker --cpus), none by default
+PLAIN_TIMEOUT_SECONDS = int(os.environ.get("PLAIN_TIMEOUT_SECONDS", "300"))  # the plain SQL the answer is checked against
 ZURICH = (47.4, 8.5)
 ALL_TABLES = ("meteo_elevation", "meteo_tmin", "meteo_tmax", "meteo_tp", "meteo_windspeedmax", "meteo_tmean",
               "meteo_sdmax", "meteo_ssrd", "landcover_upscaled", "landcover_type")
 _CELL_RE = re.compile(r"\((\d+\.\d), (\d+\.\d)\)")
+_REFERENCE_RE = re.compile(r"\b\w+@k[0-9a-f]+")
 _KILLED_RE = re.compile(r'(server process|background worker "[^"]+") \(PID \d+\) was terminated by signal (\d+)')
 
 
@@ -111,7 +122,8 @@ def service() -> str:
         docker("run", "-d", "--name", APX, "--network", NETWORK, "-e", f"POSTGRES_HOST={DB}",
                "-e", "POSTGRES_USER=provdemo", "-e", "POSTGRES_PASSWORD=provdemo",
                "-e", f"CELERY_BROKER_URL={redis}", "-e", f"CELERY_RESULT_BACKEND={redis}",
-               "-e", f"REDIS_BROKER_URI={redis}", "-e", "OIDC_ISSUER=", APX_IMAGE, check=True)
+               "-e", f"REDIS_BROKER_URI={redis}", "-e", "OIDC_ISSUER=",
+               *(f"-e{v}" for v in APX_ENV.split()), APX_IMAGE, check=True)
     base = f"http://{address(APX)}:5000/api/v1"
     for _ in range(240):
         try:
@@ -136,16 +148,18 @@ def explain(base: str, row: dict, deadline: int, on_poll: callable = lambda: Non
     return {"status": "timeout", "error": f"no result after {deadline} s", "seconds": round(time.monotonic() - t0, 1)}
 
 
-def region_cells() -> list[tuple[str, str]]:
-    """The cells of Attica, Canton of Bern and Peloponnese, as listed by the questions of template A1."""
+def region_cells(region: str = "") -> list[tuple[str, str]]:
+    """The cells of Attica, Canton of Bern and Peloponnese, or of *region* only, as listed by the
+    questions of template A1."""
     with QUESTIONS.open(newline="") as f:
-        rows = [r for r in csv.DictReader(f) if (r["category"], r["template_index"]) == ("A", "1")]
+        rows = [r for r in csv.DictReader(f)
+                if (r["category"], r["template_index"]) == ("A", "1") and region in r["question"]]
     return sorted({c for r in rows for c in _CELL_RE.findall(r["sql"])} - {tuple(map(str, ZURICH))})
 
 
-def regions_sql(elevation: bool = True) -> str:
+def regions_sql(elevation: bool = True, region: str = "") -> str:
     """Copies the City of Zurich cell's readings, and elevation points, to every region cell."""
-    values = ", ".join(f"({lat}, {lon})" for lat, lon in region_cells())
+    values = ", ".join(f"({lat}, {lon})" for lat, lon in region_cells(region))
     lat0, lon0 = ZURICH
     sql = [f"CREATE TEMP TABLE cells (lat numeric, lon numeric); INSERT INTO cells VALUES {values};"]
     for table, column in (("meteo_tmin", "tmin"), ("meteo_tmax", "tmax"), ("meteo_tp", "tp"),
@@ -162,8 +176,9 @@ def regions_sql(elevation: bool = True) -> str:
 def prepare(base_image: str, tag: str, regions: str | None) -> None:
     docker("rm", "-f", "-v", DB)
     docker("network", "create", NETWORK)
+    mount = ["-v", f"{DB_MOUNT}:/pgdata"] if DB_MOUNT else []
     docker("run", "-d", "--name", DB, "--network", NETWORK, "-e", "PGDATA=/pgdata", "-e", "POSTGRES_USER=provdemo",
-           "-e", "POSTGRES_PASSWORD=provdemo", "-e", "POSTGRES_DB=meteo", base_image, check=True)
+           "-e", "POSTGRES_PASSWORD=provdemo", "-e", "POSTGRES_DB=meteo", *mount, base_image, check=True)
     while "PostgreSQL init process complete" not in (lambda p: p.stdout + p.stderr)(docker("logs", DB)):
         time.sleep(1)
     host = wait_db(lambda: address(DB))
@@ -171,7 +186,8 @@ def prepare(base_image: str, tag: str, regions: str | None) -> None:
     psql = ["exec", "-i", DB, "psql", "-v", "ON_ERROR_STOP=1", "-q", "-U", "provdemo", "-d", "meteo"]
     docker(*psql, "-f", "/docker-entrypoint-initdb.d/01_meteo.sql", check=True)
     if regions:
-        docker(*psql, input=regions_sql(elevation=regions != "readings"), check=True)
+        docker(*psql, input=regions_sql(elevation=regions != "readings",
+                                        region="" if regions in ("all", "readings") else regions), check=True)
     docker(*psql, input=(ROOT / "scripts/meteo_standins.sql").read_text(), check=True)
     print("seeded", file=sys.stderr)
     # The service annotates the tables of the AP before it runs the query: one AP over all
@@ -184,7 +200,8 @@ def prepare(base_image: str, tag: str, regions: str | None) -> None:
     conn.execute("CHECKPOINT")
     conn.close()
     docker("stop", DB, check=True)
-    docker("commit", DB, tag, check=True)
+    if not DB_MOUNT:
+        docker("commit", DB, tag, check=True)
     docker("rm", "-v", DB)
 
 
@@ -210,8 +227,10 @@ def fresh(snapshot: str, settings: list[str]) -> str:
         docker("rm", "-f", "-v", DB)
         docker("network", "create", NETWORK)
         entrypoint = ["--entrypoint", "sh", snapshot, "-c", _RESTORE_STORE] if REUSE else [snapshot]
-        docker("run", "-d", "--name", DB, "--network", NETWORK, "--memory=3g", "--memory-swap=3g", *entrypoint,
-               check=True)
+        mount = ["-v", f"{DB_MOUNT}:/pgdata"] if DB_MOUNT else []
+        cpus = [f"--cpus={DB_CPUS}"] if DB_CPUS else []
+        docker("run", "-d", "--name", DB, "--network", NETWORK, f"--memory={DB_MEMORY}", f"--memory-swap={DB_MEMORY}",
+               *cpus, *mount, *entrypoint, check=True)
     host = wait_db(lambda: address(DB))
     conn = connect(host)
     for setting in settings:
@@ -256,6 +275,20 @@ def plain_answer(host: str, sql: str, record: dict) -> list | None:
         plain.close()
 
 
+def formula_digest(derivations: list[dict]) -> str:
+    """A digest of the formulas of an answer that does not depend on the snapshot: the row
+    references, keys drawn at annotation, are replaced by the rows they name."""
+    canonical = []
+    for d in derivations:
+        formula = (d.get("provenance") or {}).get("formula") or {}
+        rows = {r["reference"]: json.dumps(r["data"], sort_keys=True, default=str) for r in formula.get("data") or []}
+        expression = _REFERENCE_RE.sub(lambda m: rows.get(m.group(0), m.group(0)), formula.get("expression") or "")
+        canonical.append(json.dumps([d["answer"], expression], sort_keys=True, default=str))
+    if os.environ.get("FORMULA_SAMPLE"):  # to compare two runs by eye
+        print("formulas:", json.dumps(sorted(canonical)), file=sys.stderr, flush=True)
+    return hashlib.sha1("\n".join(sorted(canonical)).encode()).hexdigest()[:16]
+
+
 def measure(snapshot: str, label: str, row: dict, settings: list[str]) -> dict:
     record = {"run": label, "question_id": row["question_id"], "settings": settings}
     host = fresh(snapshot, settings)
@@ -289,7 +322,8 @@ def measure(snapshot: str, label: str, row: dict, settings: list[str]) -> dict:
                "lost": processes_lost(), "rows": len(derivations),
                "semirings": sorted({s for d in derivations for s in (d.get("provenance") or {})}),
                "with_formula": sum(1 for d in derivations
-                                   if ((d.get("provenance") or {}).get("formula") or {}).get("expression"))}
+                                   if ((d.get("provenance") or {}).get("formula") or {}).get("expression")),
+               "formula_digest": formula_digest(derivations)}
     if result["status"] == "success" and REUSE:
         plain_rows = plain_answer(wait_db(lambda: address(DB)), row["sql"], record)
     if result["status"] == "success" and plain_rows is not None:
