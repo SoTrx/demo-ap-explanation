@@ -51,10 +51,10 @@ services:
       - internal
 
   ap-explanation:
-    # The meteo questions need the sql_rewriter changes released after v1.1.1
-    # (aggregate provenance, col_<i> naming). Override AP_EXPLANATION_IMAGE / AP_EXPLANATION_TAG to run
+    # 2.0.0 requires ProvSQL 1.14 (meteo-postgres' image), and 1.12 and 1.13 break it:
+    # upgrade both together. Override AP_EXPLANATION_IMAGE / AP_EXPLANATION_TAG to run
     # another build, e.g. a local `docker build --target prod -t ...` of ap-explanation.
-    image: ${AP_EXPLANATION_IMAGE:-ghcr.io/datagems-eosc/datagems-eosc/ap-explanation}:${AP_EXPLANATION_TAG:-v1.2.0}
+    image: ${AP_EXPLANATION_IMAGE:-ghcr.io/datagems-eosc/datagems-eosc/ap-explanation}:${AP_EXPLANATION_TAG:-v2.0.0}
     labels:
       - traefik.enable=false
     environment:

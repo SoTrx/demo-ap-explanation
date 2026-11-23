@@ -16,8 +16,10 @@ from api import (
     service_healthy,
 )
 from utils import (
+    APX_114_COMMIT,
     APX_FORMULA_ROWS_COMMIT,
     APX_MASTER_COMMIT,
+    PROVSQL_114_BUILD,
     PROVSQL_MASTER_BUILD,
     PROVSQL_MASTER_COMMIT,
     PROVSQL_NEXT_BUILD,
@@ -319,7 +321,7 @@ _STATUS_ICON_BY = {STATUS_OK: "🟢", STATUS_CAVEAT: "🟡", STATUS_CRASH: "🟠
 
 def _render_question_summary(version: str = "1.12") -> None:
     """Every question of the set, coloured by whether ap-explanation can explain it: v1.2.0
-    on ProvSQL 1.12 (the demo), or master on ProvSQL 1.13 or 1.14 (*version*)."""
+    on ProvSQL 1.12 (the demo), or master on ProvSQL 1.13, 1.14 or 1.14.0 (*version*)."""
     next_version = version != "1.12"
     rows = question_statuses_next(version) if next_version else question_statuses()
     total = len(rows)
@@ -354,6 +356,23 @@ def _render_question_summary(version: str = "1.12") -> None:
             "questions of the Canton of Bern and the Peloponnese, measured on 1.13.0 only. The "
             "pre-check has a cost: the plain SQL of 301 on Attica's data takes over 60 s, while its "
             "provenance query answered in 0.3 s, and it is refused.")
+    elif version == "1.14.0":
+        st.markdown(
+            f"The **{total}** questions of the meteo question set on **ProvSQL {PROVSQL_114_BUILD}**, "
+            f"sent to **ap-explanation master** (`{APX_114_COMMIT}`, the coming 2.0.0, which requires "
+            "it): the same pre-check and `sr_formula_rows` as the 1.14 master tab, run with the same "
+            "settings (`provsql.max_memory = '1GB'`, `statement_timeout = '180s'`, pre-check 60 s), "
+            "on the City of Zurich questions and on the Attica ones (the demo's data copied to "
+            "Attica's 24 cells); the Canton of Bern and Peloponnese ones keep their 1.13.0 outcome.")
+        st.markdown(
+            "Nothing changes from the master@3b8d3098 tab: every question has the same outcome, and "
+            "every answered one the same rows and the same formulas (`formula_digest`). ProvSQL "
+            "1.14.0 adds no function over 3b8d3098 (in effect 1.13.1): it evaluates *probabilities* "
+            "faster, splitting a lineage into independent parts and caching the d-DNNFs it compiles, "
+            "and the demo asks for none. Run one at a time on both builds with the same "
+            "ap-explanation, the slowest questions take the same time, within 10%. Six questions "
+            "that `statement_timeout` stops at 180 s were measured with a 300 s deadline: the "
+            "service answers a few seconds after the statement is stopped.")
     else:
         st.markdown(
             f"The **{total}** questions of the meteo question set on **ProvSQL 1.12**, the "
@@ -385,7 +404,7 @@ def _render_question_summary(version: str = "1.12") -> None:
         key=f"summary_status_{version}",
         format_func=lambda s: f"{_STATUS_ICON_BY[s]} {s}")
     columns = (["Id", "Status", "Question", "Why", "Blocked by",
-                *(["On ProvSQL 1.13"] if version == "1.14" else []), "On ProvSQL 1.12", "Measured on",
+                *(["On ProvSQL 1.13"] if version.startswith("1.14") else []), "On ProvSQL 1.12", "Measured on",
                 "Measured (3 GB cap)", "Estimated memory", "Category", "Tables"]
                if next_version else
                ["Id", "Status", "Question", "Why", "Estimated memory", "Measured (3 GB cap)",
@@ -622,9 +641,10 @@ def _render_disk() -> None:
         + ", in a parallel worker.")
 
 
-tab_summary, tab_summary_next, tab_summary_master, tab_memory, tab_disk, tab_runner = st.tabs(
+tab_summary, tab_summary_next, tab_summary_master, tab_summary_114, tab_memory, tab_disk, tab_runner = st.tabs(
     ["📋 Summary - ProvSQL 1.12", "📋 Summary - ProvSQL 1.13",
-     f"📋 Summary - ProvSQL 1.14 - master@{PROVSQL_MASTER_COMMIT}", "🧠 Memory", "💽 Disk",
+     f"📋 Summary - ProvSQL 1.14 - master@{PROVSQL_MASTER_COMMIT}", "📋 Summary - ProvSQL 1.14.0",
+     "🧠 Memory", "💽 Disk",
      "🔎 Demo query runner"])
 
 with tab_summary:
@@ -635,6 +655,9 @@ with tab_summary_next:
 
 with tab_summary_master:
     _render_question_summary("1.14")
+
+with tab_summary_114:
+    _render_question_summary("1.14.0")
 
 with tab_memory:
     _render_memory()

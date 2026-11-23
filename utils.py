@@ -299,6 +299,9 @@ PROVSQL_NEXT_BUILD = f"1.13.0 ({PROVSQL_NEXT_COMMIT}), released 17 October 2026"
 # memory of loading a circuit.
 PROVSQL_MASTER_COMMIT = "3b8d3098"
 PROVSQL_MASTER_BUILD = f"master at {PROVSQL_MASTER_COMMIT}, 26 October 2026, 1.14.0-dev"
+# ProvSQL 1.14.0, released 17 November 2026: master@3b8d3098 (in effect 1.13.1), and the
+# probability evaluation splitting independent parts and caching compiled d-DNNFs
+PROVSQL_114_BUILD = "1.14.0, released 17 November 2026"
 PROVSQL_NEXT_SWEEP_PATH = ASSETS_DIR / "provsql_113_sweep.jsonl"
 PROVSQL_NEXT_MAXMEM_SWEEP_PATH = ASSETS_DIR / "provsql_113_sweep_maxmem1g.jsonl"
 PROVSQL_NEXT_CHECKS_PATH = ASSETS_DIR / "provsql_113_checks.jsonl"
@@ -345,15 +348,20 @@ def load_provsql_checks() -> dict[str, dict[str, dict]]:
 # the 36 that v1.2.0 does not support (33 of them for their HAVING).
 APX_SERVICE_PATHS = {"1.12": ASSETS_DIR / "apx_service_112.jsonl",
                      "1.14": ASSETS_DIR / "apx_service_114_master.jsonl",
+                     "1.14.0": ASSETS_DIR / "apx_service_1140.jsonl",
                      "1.13": ASSETS_DIR / "apx_service_113_master.jsonl"}
 APX_SERVICE_MEMORY_PATH = ASSETS_DIR / "apx_service_113_memory.jsonl"
 # The questions of Attica among them, run again on ProvSQL 1.14 on the demo's data copied to
 # Attica's 24 cells (scripts/apx_service_check.py prepare ... --regions=Attica)
 APX_SERVICE_ATTICA_114_PATH = ASSETS_DIR / "apx_service_114_attica.jsonl"
+APX_SERVICE_ATTICA_PATHS = {"1.14": APX_SERVICE_ATTICA_114_PATH,
+                            "1.14.0": ASSETS_DIR / "apx_service_1140_attica.jsonl"}
 APX_MASTER_COMMIT = "a6cf3ea"
 # ap-explanation on ProvSQL 1.14: master with the aggregated-rows pre-check merged, and
 # sr_formula_rows for aggregates (branch feat/formula-rows)
 APX_FORMULA_ROWS_COMMIT = "bbb56a6"
+# ap-explanation on ProvSQL 1.14.0: master requiring it, the 2.0.0 to be
+APX_114_COMMIT = "9154dba"
 SERVICE_DEADLINE_SECONDS = 180
 
 
@@ -370,9 +378,9 @@ def load_service_runs(version: str) -> dict[str, dict]:
 
 def load_service_memory_runs(version: str = "1.13") -> dict[str, dict]:
     """The questions that may exhaust memory, on their region's data: on ProvSQL 1.13.0, and for
-    1.14 its runs of the Attica questions in place of theirs."""
+    1.14 and 1.14.0 their runs of the Attica questions in place of theirs."""
     runs = _jsonl_by_question(APX_SERVICE_MEMORY_PATH)
-    return runs | _jsonl_by_question(APX_SERVICE_ATTICA_114_PATH) if version == "1.14" else runs
+    return runs | _jsonl_by_question(APX_SERVICE_ATTICA_PATHS[version]) if version in APX_SERVICE_ATTICA_PATHS else runs
 
 
 def service_outcome(run: dict) -> str:
@@ -460,12 +468,12 @@ def _blocked_by(outcome: str, error: str) -> str:
 
 
 def question_statuses_next(version: str = "1.13") -> list[dict]:
-    """:func:`question_statuses` for ProvSQL 1.13 or 1.14 (*version*), measured through
+    """:func:`question_statuses` for ProvSQL 1.13, 1.14 or 1.14.0 (*version*), measured through
     ap-explanation master.
 
     *Status* is measured on the City of Zurich question of the question's template; the
     questions that may exhaust memory were run themselves, on their region's data, with
-    provsql.max_memory = '1GB', on ProvSQL 1.13.0; on 1.14 those of Attica were run again, the
+    provsql.max_memory = '1GB', on ProvSQL 1.13.0; on 1.14 and 1.14.0 those of Attica were run again, the
     others keep their 1.13.0 outcome.
     *Blocked by* says where a failure comes from.
     """

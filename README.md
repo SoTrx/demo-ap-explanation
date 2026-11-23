@@ -20,6 +20,8 @@ question's own SQL (8). None is blocked by ap-explanation or by a ProvSQL bug an
 
 **📋 Summary - ProvSQL 1.14 - master@3b8d3098** — the same table on ProvSQL's master branch (1.14.0-dev, 26 October 2026), sent to ap-explanation `feat/formula-rows` (`bbb56a6`): master with the pre-check that refuses an aggregate over more than 8,000,000 rows or whose plain SQL takes over 60 s, and an aggregate's formula read as its first 100 rows with `sr_formula_rows`. The City of Zurich questions, and the Attica ones on the demo's data copied to Attica's 24 cells (`prepare … --regions=Attica`), were run on this build; the Canton of Bern and Peloponnese ones keep their 1.13.0 outcome. 509 supported, 124 with caveats, 10 runtime crashes (all of Bern and the Peloponnese, not rerun), 109 not supported: no question run on this build crashes the database.
 
+**📋 Summary - ProvSQL 1.14.0** — the same questions on the released ProvSQL 1.14.0, through ap-explanation master `9154dba` (the coming 2.0.0, which requires it), with the same settings: the same outcome for every question, and the same rows and formulas for every answered one. 1.14.0 only speeds up probability evaluation, which the demo does not ask for.
+
 **🧠 Memory** — the 82 questions estimated to exhaust memory, run through ap-explanation on
 ProvSQL 1.13, on the demo's data copied to every cell of their region, in a database capped at
 3 GB with `provsql.max_memory = '1GB'`. Two problems: a comparison on an aggregate (`HAVING`,
@@ -37,7 +39,7 @@ about 0.6× the table), ProvSQL's circuit store (grows with every query, 4 GB fo
 | `scripts/memory_analysis.py` | `assets/memory_risk.csv` | Finds both memory problems in the SQL of every question (sqlglot) and estimates their memory |
 | `scripts/memtest_group_size.sh` | `assets/memory_group_size.csv` | Measures a comparison on an aggregate against the size of its group, the basis of the estimates |
 | `scripts/memtest_questions.py` | `assets/memory_sweep.jsonl` | Runs questions through ap-explanation on ProvSQL 1.12 and records their peak memory |
-| `scripts/apx_service_check.py run … zurich` | `assets/apx_service_112.jsonl`, `assets/apx_service_113_master.jsonl` | The City of Zurich question of every template sent to ap-explanation itself (`APX_IMAGE`), which annotates the tables and asks for every semiring |
+| `scripts/apx_service_check.py run … zurich` | `assets/apx_service_112.jsonl`, `assets/apx_service_113_master.jsonl`, `assets/apx_service_114_master.jsonl`, `assets/apx_service_1140.jsonl` | The City of Zurich question of every template sent to ap-explanation itself (`APX_IMAGE`), which annotates the tables and asks for every semiring |
 | `scripts/apx_service_check.py run … --max-memory=1GB --reuse` | `assets/apx_service_113_memory.jsonl` | The questions that may exhaust memory, on the demo's data copied to their region's cells (`prepare … --regions`), through ap-explanation master |
 | `scripts/provsql_compare.py sweep` / `checks` | `assets/provsql_113_sweep.jsonl`, `assets/provsql_113_sweep_maxmem1g.jsonl`, `assets/provsql_113_checks.jsonl` | Runs queries straight on ProvSQL 1.12 and 1.13 (circuit store growth, the memory budget, run-time checks) |
 
@@ -160,9 +162,9 @@ echo YOUR_GITHUB_PAT | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-s
 
 ### 2. Pick the ap-explanation image
 
-The meteo questions need the sql_rewriter changes released **after ap-explanation v1.1.1**
-(aggregate provenance, `col_<i>` naming). `docker-compose.yml` pins
-`ghcr.io/datagems-eosc/datagems-eosc/ap-explanation:v1.2.0`. Until that tag is published,
+`docker-compose.yml` pins `ghcr.io/datagems-eosc/datagems-eosc/ap-explanation:v2.0.0`, which
+requires ProvSQL 1.14: `meteo-postgres` is built on `postgres-provsql:17-v1.14.0`. The two move
+together (ap-explanation v1.2.0 breaks on ProvSQL 1.13 and later). Until the tag is published,
 build an image from an ap-explanation checkout and point at it in `.env`:
 
 ```sh
@@ -227,10 +229,12 @@ Outside the dev container, `docker compose up` reads the same files from a plain
   in about 6 minutes, with every semiring and with `formula` alone, and ProvSQL 1.12 ignores
   `statement_timeout` and `pg_terminate_backend` while evaluating it. The demo only replays its
   recorded failure. The same holds for any comparison on an aggregate (HAVING-like filters).
-  ProvSQL 1.13 refuses such a comparison instead (see the *Memory* tab).
-- **ProvSQL 1.13 needs ap-explanation master.** The demo stays on ProvSQL 1.12 with
-  ap-explanation v1.2.0, which on ProvSQL 1.13 breaks G81, C155 and T157 (`ORDER BY … LIMIT k`
-  read in every possible world); master rewrites the queries for ProvSQL 1.13 and requires it.
+  ProvSQL 1.14, the demo's, refuses such a comparison in about a second instead
+  (`provsql.max_worlds`, see the *Memory* tab).
+- **Upgrading from ProvSQL 1.12 needs a fresh database.** Tables annotated by ap-explanation
+  v1.2.0 keep a `provsql_ref` column and mapping tables that 2.0.0 neither uses nor drops, and
+  `provsql_ref` shows in `SELECT *` answers. The data is baked into the image: recreate
+  `meteo-postgres`' volume (`docker compose up -d --renew-anon-volumes meteo-postgres`).
 - **One AP at a time per database.** ap-explanation holds a Redis lock per database while a task
   runs, so concurrent runs queue.
 - **Tables stay annotated between runs.** ap-explanation leaves the provenance columns in place.
