@@ -162,10 +162,10 @@ echo YOUR_GITHUB_PAT | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-s
 
 ### 2. Pick the ap-explanation image
 
-`docker-compose.yml` pins `ghcr.io/datagems-eosc/datagems-eosc/ap-explanation:v2.0.0`, which
+`docker-compose.yml` pins `ghcr.io/datagems-eosc/datagems-eosc/ap-explanation:v2.1.0`, which
 requires ProvSQL 1.14: `meteo-postgres` is built on `postgres-provsql:17-v1.14.0`. The two move
-together (ap-explanation v1.2.0 breaks on ProvSQL 1.13 and later). Until the tag is published,
-build an image from an ap-explanation checkout and point at it in `.env`:
+together (ap-explanation v1.2.0 breaks on ProvSQL 1.13 and later). To run another build, build
+an image from an ap-explanation checkout and point at it in `.env`:
 
 ```sh
 docker build --target prod -t ap-explanation:local ../../ap-explanation
